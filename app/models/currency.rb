@@ -139,6 +139,7 @@ class Currency < ActiveRecord::Base
     :json_rpc_endpoint,
     :rest_api_endpoint,
     :deposit_confirmations,
+    :withdraw_confirmations,
     :bitgo_test_net,
     :bitgo_wallet_id,
     :bitgo_wallet_address,
@@ -157,6 +158,14 @@ class Currency < ActiveRecord::Base
 
   def deposit_confirmations=(n)
     options['deposit_confirmations'] = n.to_i
+  end
+
+  def withdraw_confirmations
+    options['withdraw_confirmations'].to_i
+  end
+
+  def withdraw_confirmations=(n) 
+    options['withdraw_confirmations'] = n.to_i
   end
 
   def case_insensitive?
@@ -179,7 +188,7 @@ class Currency < ActiveRecord::Base
 end
 
 # == Schema Information
-# Schema version: 20180529125011
+# Schema version: 20180605104154
 #
 # Table name: currencies
 #

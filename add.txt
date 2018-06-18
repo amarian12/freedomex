@@ -1,0 +1,4 @@
+to run the deposit address daemon, command:
+bundle exec ruby lib/daemons/amqp_daemon.rb deposit_coin_address
+
+run this while server is running

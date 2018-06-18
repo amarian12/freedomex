@@ -54,6 +54,7 @@ module APIv2
       use :market, :order
     end
     post "/orders" do
+      binding.pry
       order = create_order params
       present order, with: APIv2::Entities::Order
     end
@@ -78,6 +79,7 @@ module APIv2
     end
     post "/orders/clear" do
       begin
+	binding.pry
         orders = current_user.orders.with_state(:wait)
         if params[:side].present?
           type = params[:side] == 'sell' ? 'OrderAsk' : 'OrderBid'

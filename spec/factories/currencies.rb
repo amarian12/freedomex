@@ -25,6 +25,7 @@ FactoryBot.define do
         wallet_url_template:      'https://testnet.blockchain.info/address/#{address}',
         transaction_url_template: 'https://testnet.blockchain.info/tx/#{txid}',
         deposit_confirmations:    1,
+        withdraw_confirmations:   2,
         case_sensitive:           true
     end
 
@@ -39,6 +40,7 @@ FactoryBot.define do
         api_client:            'DASH',
         json_rpc_endpoint:     'http://127.0.0.1:19999',
         deposit_confirmations: 1,
+        withdraw_confirmations: 1,
         case_sensitive:        true
     end
 
@@ -55,6 +57,7 @@ FactoryBot.define do
         wallet_url_template:      'https://rinkeby.etherscan.io/address/#{address}',
         transaction_url_template: 'https://rinkeby.etherscan.io/tx/#{txid}',
         deposit_confirmations:    1,
+        withdraw_confirmations:   1,
         case_sensitive:           false
     end
 
@@ -71,6 +74,7 @@ FactoryBot.define do
         wallet_url_template:      'https://bithomp.com/explorer/#{txid}',
         transaction_url_template: 'https://bithomp.com/explorer/#{address}',
         deposit_confirmations:    1,
+        withdraw_confirmations:   1,
         case_sensitive:           true
     end
 
@@ -88,6 +92,7 @@ FactoryBot.define do
         transaction_url_template: 'https://etherscan.io/tx/#{txid}',
         erc20_contract_address:   '0x87099adD3bCC0821B5b151307c147215F839a110',
         deposit_confirmations:    1,
+        withdraw_confirmations:   1,
         case_sensitive:           false
     end
 
@@ -104,6 +109,7 @@ FactoryBot.define do
         wallet_url_template:       'https://www.blocktrail.com/tBCC/address/#{address}',
         transaction_url_template:  'https://www.blocktrail.com/tBCC/tx/#{txid}',
         deposit_confirmations:     1,
+        withdraw_confirmations:    1,
         case_sensitive:            true,
         supports_cash_addr_format: true
     end

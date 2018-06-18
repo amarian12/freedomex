@@ -1,7 +1,8 @@
 # encoding: UTF-8
 # frozen_string_literal: true
-
-require File.join(ENV.fetch('RAILS_ROOT'), 'config', 'environment')
+puts "we on this file boa"
+RAILS_ROOT = File.expand_path('../../..', __FILE__)
+require File.join(RAILS_ROOT, 'config', 'environment')
 
 raise "bindings must be provided." if ARGV.size == 0
 
@@ -9,6 +10,7 @@ logger = Rails.logger
 
 conn = Bunny.new AMQPConfig.connect
 conn.start
+
 
 ch = conn.create_channel
 id = $0.split(':')[2]
@@ -68,7 +70,7 @@ ARGV.each do |id|
 
       # Ask RabbitMQ to deliver message once again later.
       # See http://rubybunny.info/articles/queues.html
-      ch.nack(delivery_info.delivery_tag, false, true)
+      ch.ack(delivery_info.delivery_tag, false, true)
     end
   end
 

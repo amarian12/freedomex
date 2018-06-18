@@ -8,7 +8,6 @@ module Worker
 
     def process(payload)
       payload.symbolize_keys!
-
       ccy = Currency.find(payload.fetch(:currency))
       tx  = ccy.api.load_deposit(payload.fetch(:txid))
 
@@ -23,10 +22,10 @@ module Worker
     end
 
   private
-
+ 
     def deposit!(currency, tx, entry, index)
       unless deposit_entry_processable?(currency, tx, entry, index)
-        return Rails.logger.info { "Skipped #{tx.fetch(:id)}:#{index}." }
+        return Rails.logger.info { "Already processed! Skipping #{tx.fetch(:id)}:#{index}." }         
       end
 
       deposit = "deposits/#{currency.type}".camelize.constantize.create! \

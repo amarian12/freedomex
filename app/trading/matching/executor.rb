@@ -18,8 +18,8 @@ module Matching
       execute!
     rescue StandardError => e
       [@ask, @bid].each do |order|
-      order.with_lock do
-        next unless order.state == Order::WAIT
+        order.with_lock do
+          next unless order.state == Order::WAIT
           AMQPQueue.enqueue(:matching, action: 'submit', order: order.to_matching_attributes)
         end
       end

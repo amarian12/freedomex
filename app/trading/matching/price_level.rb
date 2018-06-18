@@ -32,6 +32,5 @@ module Matching
     def find(id)
       @orders.find { |o| o.id == id }
     end
-
   end
 end

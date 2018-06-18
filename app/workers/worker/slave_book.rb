@@ -67,7 +67,7 @@ module Worker
     end
 
     def get_depth(market, side)
-      depth = Hash.new {|h, k| h[k] = 0 }
+      depth = Hash.new { |h, k| h[k] = 0 }
       @managers[Market === market ? market.id : market].send("#{side}_orders").limit_orders.each do |price, orders|
         depth[price] += orders.map(&:volume).sum
       end

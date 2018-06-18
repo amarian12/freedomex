@@ -77,7 +77,6 @@ module Matching
       return if order.filled?
       return unless (counter_order = counter_book.top)
 
-
       if trade = order.trade_with(counter_order, counter_book)
         counter_book.fill_top(*trade)
         order.fill(*trade)

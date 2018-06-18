@@ -50,7 +50,6 @@ class Order < ActiveRecord::Base
     origin_locked - locked
   end
 
-  # NOTE: Leave all markets here.
   def config
     market
   end

@@ -1,9 +1,15 @@
-# stub pusher requests
+# encoding: UTF-8
+# frozen_string_literal: true
 
-class Pusher::Client
-  def trigger_async(*args); end
+module NullPusher
+  def trigger(*)
+
+  end
+
+  def trigger_async(*)
+
+  end
 end
 
-class Pusher::Channel
-  def trigger_async(*args); end
-end
+Pusher::Client.include NullPusher
+Pusher::Channel.include NullPusher

@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 # IMPORTANT: This file is EXPERIMENTAL feature of Peatio 1.7. Don't ever try to use it in production.
 # Specifications are available in docs/specs/event_api.md.
 
@@ -50,11 +53,15 @@ module EventAPI
       end
 
       def notify_record_updated
+        return if record.previous_changes.blank?
+
         current_record  = record
         previous_record = record.dup
         record.previous_changes.each { |attribute, values| previous_record.send("#{attribute}=", values.first) }
 
+        # Guarantee timestamps.
         previous_record.created_at ||= current_record.created_at
+        previous_record.updated_at ||= current_record.created_at
 
         before = previous_record.as_json_for_event_api.compact
         after  = current_record.as_json_for_event_api.compact

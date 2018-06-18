@@ -1,32 +1,32 @@
 <% if ENV['CURRENCIES_CONFIG'] %>
 <%= File.read(ENV['CURRENCIES_CONFIG']) %>
 <% else %>
-- id:                   1
-  code:                 usd
+- id:                   usd
   symbol:               '$'
   type:                 fiat
   precision:            2
   base_factor:          1
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 1000
   deposit_fee:          0
   withdraw_fee:         0
 
-- id:                   2
-  code:                 btc
+- id:                   btc
   symbol:               '฿'
   type:                 coin
   precision:            8
   base_factor:          100_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 0.1
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        true # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            true # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: BTC
@@ -46,21 +46,22 @@
     wallet_url_template:      https://blockchain.info/address/#{address}
     transaction_url_template: https://blockchain.info/tx/#{txid}
 
-- id:                   3
-  code:                 xrp
+- id:                   xrp
   symbol:               'ꭆ'
   type:                 coin
   precision:            8
   base_factor:          1_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 1000
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        true # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            true # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: XRP
@@ -80,21 +81,22 @@
     wallet_url_template:      https://bithomp.com/explorer/#{address}
     transaction_url_template: https://bithomp.com/explorer/#{txid}
 
-- id:                   4
-  code:                 bch
+- id:                   bch
   symbol:               '฿'
   type:                 coin
   precision:            8
   base_factor:          100_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 1
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        true # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            true # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: true # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: BCH
@@ -114,21 +116,22 @@
     wallet_url_template:      https://www.blocktrail.com/BCC/address/#{address}
     transaction_url_template: https://www.blocktrail.com/BCC/tx/#{txid}
 
-- id:                   5
-  code:                 ltc
+- id:                   ltc
   symbol:               'Ł'
   type:                 coin
   precision:            8
   base_factor:          100_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 5
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        true # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            true # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: LTC
@@ -148,21 +151,22 @@
     wallet_url_template:      https://www.blocktrail.com/LTC/address/#{address}
     transaction_url_template: https://www.blocktrail.com/LTC/tx/#{txid}
 
-- id:                   6
-  code:                 dash
+- id:                   dash
   symbol:               'Đ'
   type:                 coin
   precision:            8
   base_factor:          100_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 2
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        true # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            true # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: DASH
@@ -182,21 +186,22 @@
     wallet_url_template:      https://live.blockcypher.com/dash/address/#{address}
     transaction_url_template: https://live.blockcypher.com/dash/tx/#{txid}
 
-- id:                   7
-  code:                 eth
+- id:                   eth
   symbol:               'Ξ'
   type:                 coin
   precision:            8
   base_factor:          1_000_000_000_000_000_000
-  visible:              true
+  enabled:              true
   quick_withdraw_limit: 2
   deposit_fee:          0
   withdraw_fee:         0
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        false # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            false # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration.
     api_client: ETH
@@ -216,19 +221,20 @@
     wallet_url_template:      https://etherscan.io/address/#{address}
     transaction_url_template: https://etherscan.io/tx/#{txid}
 
-- id:                   8
-  code:                 trst
+- id:                   trst
   symbol:               'Ξ'
   type:                 coin
   precision:            8
   base_factor:          1_000_000 # IMPORTANT: Don't forget to update this variable according
-  visible:              true      #            to your ERC20-based currency requirements
+  enabled:              true      #            to your ERC20-based currency requirements
   quick_withdraw_limit: 3000      #            (usually can be found on the official website).
   options:
     #
     # Generic configuration variables.
-    case_sensitive:        false # IMPORTANT: Be sure to set the correct value!
-    deposit_confirmations: 1 # Set to zero to stop processing all incoming deposits.
+    case_sensitive:            false # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
     #
     # API client configuration (BitGo is not currently supported).
     api_client: ERC20

@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Private::SettingsController, type: :controller do
-  let(:member) { create :member, :verified_identity }
+  let(:member) { create :member, :level_3 }
   before { session[:member_id] = member.id }
 
   describe 'GET /index' do

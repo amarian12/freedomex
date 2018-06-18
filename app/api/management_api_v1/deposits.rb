@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module ManagementAPIv1
   class Deposits < Grape::API
 
@@ -13,19 +16,16 @@ module ManagementAPIv1
       optional :state,    type: String, values: -> { Deposit::STATES.map(&:to_s) }, desc: 'The state to filter by.'
     end
     post '/deposits' do
-      if params[:currency].present?
-        currency = Currency.find_by!(code: params[:currency])
-      end
-
-      if params[:uid].present?
-        member = Authentication.find_by!(provider: :barong, uid: params[:uid]).member
-      end
+      currency = Currency.find(params[:currency]) if params[:currency].present?
+      member   = Authentication.find_by!(provider: :barong, uid: params[:uid]).member if params[:uid].present?
 
       Deposit
         .order(id: :desc)
         .tap { |q| q.where!(currency: currency) if currency }
         .tap { |q| q.where!(member: member) if member }
         .tap { |q| q.where!(aasm_state: params[:state]) if params[:state] }
+        .includes(:member)
+        .includes(:currency)
         .page(params[:page])
         .per(params[:limit])
         .tap { |q| present q, with: ManagementAPIv1::Entities::Deposit }
@@ -58,7 +58,7 @@ module ManagementAPIv1
     end
     post '/deposits/new' do
       member   = Authentication.find_by(provider: :barong, uid: params[:uid])&.member
-      currency = Currency.find_by(code: params[:currency])
+      currency = Currency.find(params[:currency])
       data     = { member: member, currency: currency }.merge!(params.slice(:amount, :tid))
       deposit  = ::Deposits::Fiat.new(data)
       if deposit.save

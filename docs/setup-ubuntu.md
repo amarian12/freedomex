@@ -186,7 +186,6 @@ mkdir code
 cd code
 git clone https://github.com/rubykube/peatio.git
 cd peatio
-git checkout 1-5-stable  // Choose your version, but make sure you'll install the same version for peatio-trading-ui
 bundle install
 ```
 
@@ -199,7 +198,7 @@ bin/init_config
 Then install and run yarn:
 
     $ npm install -g yarn
-    $ bundle exec rake tmp:create yarn:install assets:precompile
+    $ bundle exec rake tmp:create yarn:install
 
 
 #### Setup Pusher
@@ -224,7 +223,10 @@ Replace `username:password` and `port`.
 #### Setup database:
 
 ```shell
-bundle exec rake db:setup
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake currencies:seed
+bundle exec rake markets:seed
 ```
 
 #### Run daemons
@@ -273,7 +275,7 @@ URL_HOST: ec2-34-xxx-xxx-xx.compute-1.amazonaws.com:3000
 Start the server:
 
 ```shell
-$ bundle exec rails server
+$ bundle exec rails server -p 3000
 ```
 
 If you setup peatio-workbench on a server (like AWS ec2)
@@ -311,6 +313,12 @@ Edit the `/config/application.yml` and set your app DNS.  Ex:
 PLATFORM_ROOT_URL: http://ec2-xx-xx-xxx-xxx.compute-1.amazonaws.com
 ```
 
+Start the server
+
+```shell
+bundle exec rails server -p 4000
+```
+
 Refer to the release note here : https://github.com/rubykube/peatio/blob/master/docs/releases/1.5.0.md
 
 
@@ -331,9 +339,18 @@ Open `/etc/nginx/sites-available/default` in your favorite editor
 Replace the content of the file by the following
 
 ```
+#
+# ATTENTION!
+#
+# Make sure to add the next line to /etc/hosts.
+#
+#   127.0.0.1 peatio.io
+#
+
 server {
-  server_name http://peatio.local;
-  listen      80 default_server;
+  server_name      peatio.io;
+  listen           80;
+  proxy_set_header Host peatio.io;
 
   location ~ ^/(?:trading|trading-ui-assets)\/ {
     proxy_pass http://127.0.0.1:4000;
@@ -345,7 +362,7 @@ server {
 }
 ```
 
-Make sure to replace `http://peatio.local` with your actual server DNS
+Make sure to replace `http://peatio.io` with your actual server DNS
 
 Verify that the syntax of the config file is valid : `$ sudo nginx -t`
 

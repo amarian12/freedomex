@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 class SessionsController < ApplicationController
   before_action :auth_member!, only: :destroy
   before_action :auth_anybody!, only: :failure
@@ -37,7 +40,7 @@ private
       elsif ENV[key]
         redirect_to ENV[key]
       else
-        redirect_back_or_settings_page
+        redirect_to settings_url
       end
     end
   end

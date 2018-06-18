@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Private::OrderBidsController, type: :controller do
   let(:member) do
-    create(:member, :verified_identity).tap do |m|
+    create(:member, :level_3).tap do |m|
       m.get_account(:usd).update_attributes(balance: '30000')
     end
   end
@@ -21,11 +24,6 @@ describe Private::OrderBidsController, type: :controller do
         expect(response).to be_success
         expect(response.body).to eq '{"result":true,"message":"Success"}'
       end.to change(OrderBid, :count).by(1)
-    end
-
-    it 'should set order source to Web' do
-      post :create, params, member_id: member.id
-      expect(assigns(:order).source).to eq 'Web'
     end
   end
 

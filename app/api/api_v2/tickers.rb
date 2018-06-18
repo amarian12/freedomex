@@ -1,10 +1,13 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   class Tickers < Grape::API
     helpers ::APIv2::NamedParams
 
     desc 'Get ticker of all markets.'
     get "/tickers" do
-      Market.all.inject({}) do |h, m|
+      Market.enabled.ordered.inject({}) do |h, m|
         h[m.id] = format_ticker Global[m.id].ticker
         h
       end

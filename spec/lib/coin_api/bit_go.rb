@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe CoinAPI::BitGo do
-  let(:currency) { Currency.find_by_code!(:btc) }
+  let(:currency) { Currency.find(:btc) }
   let(:client) { currency.api }
 
   before do

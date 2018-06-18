@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe ManagementAPIv1::Deposits, type: :request do
   before do
     defaults_for_management_api_v1_security_configuration!
@@ -71,7 +74,7 @@ describe ManagementAPIv1::Deposits, type: :request do
 
   describe 'create deposits' do
     let(:member) { create(:member, :barong) }
-    let(:currency) { Currency.find_by!(code: :usd) }
+    let(:currency) { Currency.find(:usd) }
     let(:amount) { 750.77 }
     let :data do
       { uid:      member.authentications.first.uid,
@@ -139,7 +142,7 @@ describe ManagementAPIv1::Deposits, type: :request do
     end
 
     context 'when coin instead of fiat is supplied' do
-      let(:currency) { Currency.find_by!(code: :btc) }
+      let(:currency) { Currency.find(:btc) }
       it 'doesn\'t work' do
         request
         expect(response.body).to match(/currency does not have a valid value/i)
@@ -177,7 +180,7 @@ describe ManagementAPIv1::Deposits, type: :request do
       put_json '/management_api/v1/deposits/state', multisig_jwt_management_api_v1({ data: data }, *signers)
     end
 
-    let(:currency) { Currency.find_by!(code: :usd) }
+    let(:currency) { Currency.find(:usd) }
     let(:member) { create(:member, :barong) }
     let(:amount) { 500.90 }
     let(:signers) { %i[alex jeff] }

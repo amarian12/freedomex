@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 def who_is_billionaire
-  member = create(:member, :verified_identity)
+  member = create(:member, :level_3)
   member.get_account(:btc).update_attributes(
     locked: '1000000000.0'.to_d, balance: '1000000000.0'.to_d
   )

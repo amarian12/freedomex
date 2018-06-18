@@ -1,9 +1,12 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   class Orders < Grape::API
     helpers ::APIv2::NamedParams
 
     before { authenticate! }
-    before { identity_must_be_verified! }
+    before { trading_must_be_permitted! }
 
     desc 'Get your orders, results is paginated.', scopes: %w(history trade)
     params do
@@ -51,6 +54,7 @@ module APIv2
       use :market, :order
     end
     post "/orders" do
+      binding.pry
       order = create_order params
       present order, with: APIv2::Entities::Order
     end
@@ -75,6 +79,7 @@ module APIv2
     end
     post "/orders/clear" do
       begin
+	binding.pry
         orders = current_user.orders.with_state(:wait)
         if params[:side].present?
           type = params[:side] == 'sell' ? 'OrderAsk' : 'OrderBid'

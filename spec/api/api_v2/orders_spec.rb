@@ -1,8 +1,11 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe APIv2::Orders, type: :request do
-  let(:member) { create(:member, :verified_identity) }
-  let(:unverified_member) { create(:member, :unverified) }
+  let(:member) { create(:member, :level_3) }
+  let(:level_0_member) { create(:member, :level_0) }
   let(:token) { jwt_for(member) }
-  let(:unverified_member_token) { jwt_for(unverified_member) }
+  let(:level_0_member_token) { jwt_for(level_0_member) }
 
   describe 'GET /api/v2/orders' do
     before do
@@ -17,11 +20,10 @@ describe APIv2::Orders, type: :request do
       expect(response.code).to eq '401'
     end
 
-    it 'should validate market param' do
-      api_get '/api/v2/orders', params: { market: 'mtgox' }, token: token
-
-      expect(response.code).to eq '422'
-      expect(JSON.parse(response.body)).to eq ({ 'error' => { 'code' => 1001, 'message' => 'market does not have a valid value' } })
+    it 'return empty set for non-existing market' do
+      api_get '/api/v2/orders', params: { market: 'usdusd' }, token: token
+      expect(response).to have_http_status 200
+      expect(JSON.parse(response.body)).to be_empty
     end
 
     it 'should validate state param' do
@@ -70,7 +72,7 @@ describe APIv2::Orders, type: :request do
     end
 
     it 'denies access to unverified member' do
-      api_get '/api/v2/orders', token: unverified_member_token
+      api_get '/api/v2/orders', token: level_0_member_token
       expect(response.code).to eq '401'
     end
   end
@@ -171,31 +173,24 @@ describe APIv2::Orders, type: :request do
       end.to change(OrderBid, :count).by(1)
     end
 
-    it 'should set order source to APIv2' do
-      member.get_account(:usd).update_attributes(balance: 100_000)
-      api_post '/api/v2/orders', token: token, params: { market: 'btcusd', side: 'buy', volume: '12.13', price: '2014' }
-      expect(response).to be_success
-      expect(OrderBid.last.source).to eq 'APIv2'
-    end
-
     it 'should return cannot lock funds error' do
       old_count = OrderAsk.count
       api_post '/api/v2/orders', token: token, params: { market: 'btcusd', side: 'sell', volume: '12.13', price: '2014' }
       expect(response.code).to eq '422'
-      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order. Reason: cannot lock funds (amount: 12.13)"}}'
+      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order."}}'
       expect(OrderAsk.count).to eq old_count
     end
 
     it 'should give a number as volume parameter' do
       api_post '/api/v2/orders', token: token, params: { market: 'btcusd', side: 'sell', volume: 'test', price: '2014' }
       expect(response.code).to eq '422'
-      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order. Reason: Validation failed: Volume must be greater than 0"}}'
+      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order."}}'
     end
 
     it 'should give a number as price parameter' do
       api_post '/api/v2/orders', token: token, params: { market: 'btcusd', side: 'sell', volume: '12.13', price: 'test' }
       expect(response.code).to eq '422'
-      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order. Reason: Validation failed: Price must be greater than 0"}}'
+      expect(response.body).to eq '{"error":{"code":2002,"message":"Failed to create order."}}'
     end
   end
 

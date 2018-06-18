@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Matching::Executor do
   let(:alice)  { who_is_billionaire }
   let(:bob)    { who_is_billionaire }
@@ -113,9 +116,9 @@ describe Matching::Executor do
         market_id:    market.id,
         ask_id:       ask.id,
         bid_id:       bid.id,
-        strike_price: '2.0',
-        volume:       '1.5',
-        funds:        '3.0'
+        strike_price: '2.0'.to_d,
+        volume:       '1.5'.to_d,
+        funds:        '3.0'.to_d
       )
       executor.execute!
 
@@ -162,7 +165,7 @@ describe Matching::Executor do
       alice.get_account(:btc).update_attributes(locked: ::Trade::ZERO)
 
       expect do
-        expect { subject.execute! }.to raise_error(Account::LockedError)
+        expect { subject.execute! }.to raise_error(Account::AccountError)
       end.not_to change(Trade, :count)
     end
   end

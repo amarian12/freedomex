@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module CoinAPI
   Error                  = Class.new(StandardError) # TODO: Rename to Exception.
   ConnectionRefusedError = Class.new(StandardError) # TODO: Remove this.
@@ -10,9 +13,7 @@ module CoinAPI
     #   The currency code. May be uppercase or lowercase.
     # @return [BaseAPI]
     def [](code)
-      currency = Currency.find_by!(code: code.to_s)
-      raise Error, "Couldn't find currency with code #{code.inspect}." unless currency
-
+      currency = Currency.find(code)
       if currency.try(:api_client).present?
         "CoinAPI::#{currency.api_client.camelize}"
       else

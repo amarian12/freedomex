@@ -1,9 +1,12 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe APIv2::Deposits, type: :request do
-  let(:member) { create(:member, :verified_identity) }
-  let(:other_member) { create(:member, :verified_identity) }
+  let(:member) { create(:member, :level_3) }
+  let(:other_member) { create(:member, :level_3) }
   let(:token) { jwt_for(member) }
-  let(:unverified_member) { create(:member, :unverified) }
-  let(:unverified_member_token) { jwt_for(unverified_member) }
+  let(:level_0_member) { create(:member, :level_0) }
+  let(:level_0_member_token) { jwt_for(level_0_member) }
 
   describe 'GET /api/v2/deposits' do
     before do
@@ -77,8 +80,25 @@ describe APIv2::Deposits, type: :request do
     end
 
     it 'denies access to unverified member' do
-      api_get '/api/v2/deposits', token: unverified_member_token
+      api_get '/api/v2/deposits', token: level_0_member_token
       expect(response.code).to eq '401'
+    end
+
+    describe 'GET /api/v2/deposit_address' do
+      it 'validates currency' do
+        api_get '/api/v2/deposit_address', params: { currency: :usd }, token: token
+        expect(response).to have_http_status 422
+        expect(response.body).to eq '{"error":{"code":1001,"message":"currency does not have a valid value"}}'
+      end
+    end
+  end
+
+  describe 'GET /api/v2/deposit_address' do
+    before { member.ac(:btc).payment_address.update!(address: '1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX') }
+
+    it 'doesn\'t expose sensitive data' do
+      api_get '/api/v2/deposit_address', params: { currency: :btc }, token: token
+      expect(response.body).to eq '{"currency":"btc","address":"1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"}'
     end
   end
 end

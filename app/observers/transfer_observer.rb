@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 class TransferObserver < AuditObserver
   observe :deposit, :withdraw
 
@@ -6,5 +9,4 @@ class TransferObserver < AuditObserver
       Audit::TransferAuditLog.audit!(record, current_user)
     end
   end
-
 end

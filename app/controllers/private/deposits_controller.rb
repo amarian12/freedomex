@@ -1,11 +1,12 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module Private
   class DepositsController < BaseController
-    before_action :auth_verified!
+    before_action :deposits_must_be_permitted!
 
     def gen_address
-      current_user.get_account(currency).tap do |account|
-        account.payment_address&.enqueue_address_generation
-      end
+      current_user.ac(currency).payment_address
       head 204
     end
 
@@ -21,7 +22,7 @@ module Private
   private
 
     def currency
-      @currency ||= Currency.find_by_code!(params[:currency])
+      @currency ||= Currency.enabled.find(params[:currency])
     end
   end
 end

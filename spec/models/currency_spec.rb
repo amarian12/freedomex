@@ -1,9 +1,9 @@
-describe Currency do
-  let!(:deposit_fee) { currency.deposit_fee }
-  after { currency.update_columns(deposit_fee: deposit_fee) }
+# encoding: UTF-8
+# frozen_string_literal: true
 
+describe Currency do
   context 'fiat' do
-    let(:currency) { Currency.find_by_code!(:usd) }
+    let(:currency) { Currency.find(:usd) }
     it 'allows to change deposit fee' do
       currency.update!(deposit_fee: 0.25)
       expect(currency.deposit_fee).to eq 0.25
@@ -11,10 +11,24 @@ describe Currency do
   end
 
   context 'coin' do
-    let(:currency) { Currency.find_by_code!(:btc) }
+    let(:currency) { Currency.find(:btc) }
     it 'doesn\'t allow to change deposit fee' do
       currency.update!(deposit_fee: 0.25)
       expect(currency.deposit_fee).to eq 0
     end
+  end
+
+  it 'disables markets when currency is set to disabled' do
+    currency = Currency.find(:usd)
+    expect(Market.find(:btcusd).enabled?).to be_truthy
+    expect(Market.find(:dashbtc).enabled?).to be_truthy
+
+    currency.update!(enabled: false)
+    expect(Market.find(:btcusd).enabled?).to be_falsey
+    expect(Market.find(:dashbtc).enabled?).to be_truthy
+
+    currency.update!(enabled: true)
+    expect(Market.find(:btcusd).enabled?).to be_falsey
+    expect(Market.find(:dashbtc).enabled?).to be_truthy
   end
 end

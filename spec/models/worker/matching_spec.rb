@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Worker::Matching do
   let(:alice)  { who_is_billionaire }
   let(:bob)    { who_is_billionaire }
@@ -7,11 +10,11 @@ describe Worker::Matching do
 
   context 'engines' do
     it 'should get all engines' do
-      expect(subject.engines.keys).to eq [market.id]
+      expect(subject.engines.keys.sort).to eq Market.pluck(:id).sort
     end
 
     it 'should started all engines' do
-      expect(subject.engines.values.map(&:mode)).to eq [:run]
+      expect(subject.engines.values.map(&:mode)).to eq Array.new(Market.count, :run)
     end
   end
 

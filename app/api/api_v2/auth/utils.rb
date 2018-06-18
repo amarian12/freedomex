@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   module Auth
     module Utils
@@ -8,7 +11,7 @@ module APIv2
         end
 
         def jwt_public_key
-          OpenSSL::PKey.read(Base64.urlsafe_decode64(ENV.fetch('JWT_PUBLIC_KEY')))
+          Rails.configuration.x.jwt_public_key
         end
       end
     end

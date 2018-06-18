@@ -1,12 +1,15 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require_dependency 'admin/deposits/base_controller'
 
 module Admin
   module Deposits
     class FiatsController < BaseController
       def index
-        q = ::Deposits::Fiat.where(currency: currency)
-        @latest_deposits = q.includes(:member).where('created_at <= ?', 1.day.ago).order('id DESC')
-        @all_deposits    = q.includes(:member).where('created_at > ?', 1.day.ago).order('id DESC')
+        q = ::Deposits::Fiat.where(currency: currency).includes(:member).includes(:currency)
+        @latest_deposits = q.where('created_at <= ?', 1.day.ago).order('id DESC')
+        @all_deposits    = q.where('created_at > ?', 1.day.ago).order('id DESC')
       end
 
       def new
@@ -15,7 +18,7 @@ module Admin
 
       def show
         @deposit = ::Deposits::Fiat.where(currency: currency).find(params[:id])
-        flash.now[:notice] = t('.notice') if @deposit.aasm_state.accepted?
+        flash.now[:notice] = t('.notice') if @deposit.accepted?
       end
 
       def create

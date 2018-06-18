@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe SessionsController, type: :controller do
   %i[ google_oauth2 auth0 barong ].each do |provider|
     normalized_provider = provider.to_s.gsub(/(?:_|oauth2)+\z/i, '')
@@ -24,7 +27,7 @@ describe SessionsController, type: :controller do
           expect(m.disabled).to eq(auth_json[:info][:state] != 'active')
         end
         if auth_json[:info].key?(:level)
-          expect(m.level).to eq(Member::Levels.get(auth_json[:info][:level]))
+          expect(m.level).to eq(auth_json[:info][:level])
         end
         expect(m.authentications.count).to eq 1
         expect(m.authentications.first.uid).to eq auth_json[:uid]
@@ -63,6 +66,9 @@ describe SessionsController, type: :controller do
 
       it 'should successfully destroy a session' do
         post :create, provider: provider
+        # Since in specs controller instance remains the same we need to unmemoize all cached values.
+        # See https://github.com/matthewrudy/memoist#reload
+        controller.flush_cache
         post :destroy
         expect(session[:member_id]).to be_nil
       end

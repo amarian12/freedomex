@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # frozen_string_literal: true
 
 require 'em-websocket'
@@ -5,11 +6,11 @@ require 'em-websocket'
 require File.expand_path('../../config/environment', __dir__)
 require_dependency 'api_v2/websocket_protocol'
 
-Rails.logger = logger = Logger.new STDOUT
+logger = Rails.logger
 
 EM.error_handler do |e|
-  logger.error "Error: #{e}"
-  logger.error e.backtrace[0,20].join("\n")
+  logger.error { "Error: #{e}" }
+  logger.error { e.backtrace[0,20].join("\n") }
 end
 
 EM.run do
@@ -29,7 +30,7 @@ EM.run do
   end
 
   EM::WebSocket.run(config) do |ws|
-    logger.debug "New WebSocket connection: #{ws.inspect}"
+    logger.debug { "New WebSocket connection: #{ws.inspect}" }
 
     protocol = ::APIv2::WebSocketProtocol.new(ws, ch, logger)
 
@@ -42,7 +43,7 @@ EM.run do
         end
 
         ws.onpong do |message|
-          logger.debug "pong: #{message}"
+          logger.debug { "pong: #{message}" }
         end
       end
 
@@ -56,16 +57,16 @@ EM.run do
     ws.onerror do |error|
       case error
       when EM::WebSocket::WebSocketError
-        logger.info "WebSocket error: #{$!}"
-        logger.info $!.backtrace[0,20].join("\n")
-        logger.info $!.inspect
+        logger.info { "WebSocket error: #{$!}" }
+        logger.info { $!.backtrace[0,20].join("\n") }
+        logger.info { $!.inspect }
       else
-        logger.info $!
+        logger.info { $! }
       end
     end
 
     ws.onclose do
-      logger.info "WebSocket closed"
+      logger.info { "WebSocket closed" }
     end
   end
 end

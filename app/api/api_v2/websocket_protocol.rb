@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   class WebSocketProtocol
     def initialize(socket, channel, logger)
@@ -12,7 +15,7 @@ module APIv2
     end
 
     def handle(msg)
-      @logger.debug(msg)
+      @logger.debug { msg }
       msg = JSON.parse(msg)
       key = msg.keys.first
 
@@ -31,7 +34,7 @@ module APIv2
       end
 
     rescue => e
-      @logger.error 'Error while handling message.'
+      @logger.error { 'Error while handling message.' }
       report_exception(e)
     end
 
@@ -39,19 +42,19 @@ module APIv2
 
     def send(method, data)
       payload = JSON.dump(method => data)
-      @logger.debug payload
+      @logger.debug { payload }
       @socket.send payload
     end
 
     def subscribe_orders
       x = @channel.send *AMQPConfig.exchange(:orderbook)
       q = @channel.queue '', auto_delete: true
-      q.bind(x).subscribe do |metadata, payload|
+      q.bind(x).subscribe do |delivery_info, metadata, payload|
         begin
           payload = JSON.parse payload
           send :orderbook, payload
         rescue => e
-          Rails.logger.error 'Error on receiving orders.'
+          Rails.logger.error { 'Error on receiving orders.' }
           report_exception(e)
         end
       end
@@ -61,17 +64,16 @@ module APIv2
       x = @channel.send *AMQPConfig.exchange(:trade)
       q = @channel.queue '', auto_delete: true
       q.bind(x, arguments: {'ask_member_id' => member.id, 'bid_member_id' => member.id, 'x-match' => 'any'})
-      q.subscribe(ack: true) do |metadata, payload|
+      q.subscribe manual_ack: true do |delivery_info, metadata, payload|
         begin
           payload = JSON.parse payload
           trade   = Trade.find payload['id']
-
           send :trade, serialize_trade(trade, member, metadata)
         rescue => e
-          Rails.logger.error 'Error on receiving trades.'
+          Rails.logger.error { 'Error on receiving trades.' }
           report_exception(e)
         ensure
-          metadata.ack
+          @channel.ack(delivery_info.delivery_tag)
         end
       end
     end

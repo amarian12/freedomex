@@ -1,17 +1,22 @@
-require File.join(ENV.fetch('RAILS_ROOT'), 'config', 'environment')
+# encoding: UTF-8
+# frozen_string_literal: true
+puts "we on this file boa"
+RAILS_ROOT = File.expand_path('../../..', __FILE__)
+require File.join(RAILS_ROOT, 'config', 'environment')
 
 raise "bindings must be provided." if ARGV.size == 0
 
-Rails.logger = logger = Logger.new STDOUT
+logger = Rails.logger
 
 conn = Bunny.new AMQPConfig.connect
 conn.start
+
 
 ch = conn.create_channel
 id = $0.split(':')[2]
 prefetch = AMQPConfig.channel(id)[:prefetch] || 0
 ch.prefetch(prefetch) if prefetch > 0
-logger.info "Connected to AMQP broker (prefetch: #{prefetch > 0 ? prefetch : 'default'})"
+logger.info { "Connected to AMQP broker (prefetch: #{prefetch > 0 ? prefetch : 'default'})" }
 
 terminate = proc do
   # logger is forbidden in signal handling, just use puts here
@@ -47,7 +52,7 @@ ARGV.each do |id|
 
   # Enable manual acknowledge mode by setting manual_ack: true.
   queue.subscribe manual_ack: true do |delivery_info, metadata, payload|
-    logger.info "Received: #{payload}"
+    logger.info { "Received: #{payload}" }
     begin
 
       # Invoke Worker#process with floating number of arguments.
@@ -65,7 +70,7 @@ ARGV.each do |id|
 
       # Ask RabbitMQ to deliver message once again later.
       # See http://rubybunny.info/articles/queues.html
-      ch.nack(delivery_info.delivery_tag, false, true)
+      ch.ack(delivery_info.delivery_tag, false, true)
     end
   end
 

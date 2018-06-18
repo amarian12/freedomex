@@ -1,17 +1,19 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module Concerns
   module OrderCreation
     extend ActiveSupport::Concern
 
     def order_params(order)
-      params[order][:bid] = Currency.find_by(code: params[:bid])&.id
-      params[order][:ask] = Currency.find_by(code: params[:ask])&.id
+      params[order][:bid] = Currency.enabled.find(params[:bid])&.id
+      params[order][:ask] = Currency.enabled.find(params[:ask])&.id
       params[order][:state] = Order::WAIT
       params[order][:market_id] = params[:market]
       params[order][:member_id] = current_user.id
       params[order][:volume] = params[order][:origin_volume]
-      params[order][:source] = 'Web'
       params.require(order).permit(
-        :bid, :ask, :market_id, :price, :source,
+        :bid, :ask, :market_id, :price,
         :state, :origin_volume, :volume, :member_id, :ord_type)
     end
 

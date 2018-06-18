@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe ManagementAPIv1::JWTAuthenticationMiddleware, type: :request do
-  let(:member) { create(:member, :verified_identity) }
+  let(:member) { create(:member, :level_3) }
   let(:config) { management_api_v1_security_configuration }
 
   before do

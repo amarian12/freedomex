@@ -1,11 +1,15 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Ordering do
   let(:order) { create(:order_bid, volume: '1.23456789', price: '1.23456789') }
-  let(:account) { create(:account, balance: 100.to_d, locked: 100.to_d) }
+  let(:account) { create_account(:usd, balance: 100.to_d, locked: 100.to_d) }
 
   describe 'ordering service can submit order' do
     before do
       order.stubs(:hold_account).returns(account)
-      AMQPQueue.expects(:enqueue).with(:matching, anything)
+      order.stubs(:hold_account!).returns(account.lock!)
+      AMQPQueue.expects(:enqueue).with(:matching, anything).once
     end
 
     it 'should return true on success' do
@@ -20,13 +24,13 @@ describe Ordering do
 
     it 'should compute locked after number precision fixed' do
       Ordering.new(order).submit
-      expect(order.reload.locked).to eq '1.23'.to_d * '1.2345'.to_d
+      expect(order.reload.locked).to eq '1.52399025'.to_d
     end
   end
 
   describe 'ordering service can cancel order' do
     before do
-      order.stubs(:hold_account).returns(account)
+      order.stubs(:hold_account!).returns(account.lock!)
     end
 
     it 'should soft cancel order' do

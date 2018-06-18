@@ -1,45 +1,34 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   include SessionUtils
+  extend Memoist
+
   protect_from_forgery with: :exception
 
   helper_method :current_user, :is_admin?, :current_market, :gon
-  before_action :set_timezone, :set_gon
-  after_action :allow_iframe
-  rescue_from CoinAPI::ConnectionRefusedError, with: :coin_rpc_connection_refused
+  before_action :set_language, :set_gon
+  around_action :share_user
 
-  private
-
-  def currency
-    "#{params[:ask]}#{params[:bid]}".to_sym
-  end
+private
 
   def current_market
-    @current_market ||= Market.find_by(id: params[:market]) || Market.find_by(id: cookies[:market_id]) || Market.first
+    unless params[:market].blank?
+      Market.enabled.find_by_id(params[:market])
+    end || Market.enabled.ordered.first
   end
-
-  def redirect_back_or_settings_page
-    if cookies[:redirect_to].present?
-      redirect_to URI.parse(cookies[:redirect_to]).path
-      cookies[:redirect_to] = nil
-    else
-      redirect_to settings_path
-    end
-  end
+  memoize :current_market
 
   def current_user
-    @current_user ||= Member.current = Member.enabled.where(id: session[:member_id]).first
+    return if session[:member_id].blank?
+    Member.enabled.find_by_id(session[:member_id])
   end
+  memoize :current_user
 
   def auth_member!
     unless current_user
-      set_redirect_to
       redirect_to root_path, alert: t('activations.new.login_required')
-    end
-  end
-
-  def auth_verified!
-    if current_user.level.present? && !current_user.level.identity_verified?
-      redirect_to settings_path, alert: t('private.settings.index.auth-verified')
     end
   end
 
@@ -48,15 +37,11 @@ class ApplicationController < ActionController::Base
   end
 
   def auth_admin!
-    redirect_to main_app.root_path unless is_admin?
+    redirect_to root_path unless is_admin?
   end
 
   def is_admin?
     current_user&.admin?
-  end
-
-  def set_timezone
-    Time.zone = ENV['TIMEZONE'] if ENV['TIMEZONE']
   end
 
   def set_gon
@@ -64,7 +49,7 @@ class ApplicationController < ActionController::Base
     gon.local = I18n.locale
     gon.market = current_market.attributes
     gon.ticker = current_market.ticker
-    gon.markets = Market.find_each.each_with_object({}) { |market, memo| memo[market.id] = market.as_json }
+    gon.markets = Market.enabled.each_with_object({}) { |market, memo| memo[market.id] = market.as_json }
     gon.host = request.base_url
     gon.pusher = {
       key:       ENV.fetch('PUSHER_CLIENT_KEY'),
@@ -132,7 +117,7 @@ class ApplicationController < ActionController::Base
       }
     }
 
-    gon.currencies = Currency.visible.inject({}) do |memo, currency|
+    gon.currencies = Currency.enabled.inject({}) do |memo, currency|
       memo[currency.code] = {
         code: currency.code,
         symbol: currency.symbol,
@@ -141,21 +126,21 @@ class ApplicationController < ActionController::Base
       memo
     end
     gon.display_currency = ENV.fetch('DISPLAY_CURRENCY')
-    gon.fiat_currencies = Currency.fiats.pluck(:code)
+    gon.fiat_currencies = Currency.enabled.ordered.fiats.codes
 
     gon.tickers = {}
-    Market.all.each do |market|
+    Market.enabled.each do |market|
       gon.tickers[market.id] = market.unit_info.merge(Global[market.id].ticker)
     end
 
     if current_user
       gon.user = { sn: current_user.sn }
-      gon.accounts = current_user.accounts.inject({}) do |memo, account|
+      gon.accounts = current_user.accounts.enabled.includes(:currency).inject({}) do |memo, account|
         memo[account.currency.code] = {
           currency: account.currency.code,
           balance: account.balance,
           locked: account.locked
-        } if account.currency.try(:visible)
+        } if account.currency.try(:enabled)
         memo
       end
     end
@@ -163,11 +148,19 @@ class ApplicationController < ActionController::Base
     gon.bank_details_html = ENV['BANK_DETAILS_HTML']
   end
 
-  def coin_rpc_connection_refused
-    render 'errors/connection'
+  def set_language
+    cookies[:lang] = params[:lang] unless params[:lang].blank?
+    cookies[:lang].tap do |locale|
+      I18n.locale = locale if locale.present? && I18n.available_locales.include?(locale.to_sym)
+    end
   end
 
-  def allow_iframe
-    response.headers.except! 'X-Frame-Options' if Rails.env.development?
+  def share_user
+    Member.current = current_user
+    yield
+  ensure
+    # http://stackoverflow.com/questions/2513383/access-current-user-in-model
+    # To address the thread variable leak issues in Puma/Thin webserver
+    Member.current = nil
   end
 end

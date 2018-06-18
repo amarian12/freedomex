@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require File.join(ENV.fetch('RAILS_ROOT'), "config", "environment")
 
-Rails.logger = @logger = Logger.new STDOUT
+@logger = Rails.logger
 
 @r ||= KlineDB.redis
 
@@ -72,7 +75,7 @@ def append_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "append #{k}: #{point.to_json}"
+  @logger.info { "append #{k}: #{point.to_json}" }
   @r.rpush k, point.to_json
 
   if period == 1
@@ -87,7 +90,7 @@ def update_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "update #{k}: #{point.to_json}"
+  @logger.info { "update #{k}: #{point.to_json}" }
   @r.rpop k
   @r.rpush k, point.to_json
 end
@@ -110,7 +113,8 @@ def fill(market, period = 1)
 end
 
 while($running) do
-  Market.find_each do |market|
+  # NOTE: Turn off ticker updates for disabled markets.
+  Market.enabled.each do |market|
     ts = next_ts(market.id, 1)
     next unless ts
 

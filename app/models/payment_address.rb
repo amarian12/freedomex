@@ -1,17 +1,19 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 class PaymentAddress < ActiveRecord::Base
-  include Currencible
-  belongs_to :account
+  include BelongsToCurrency
+  include BelongsToAccount
 
   after_commit :enqueue_address_generation
 
-  has_many :transactions, class_name: 'Deposits::Coin', foreign_key: :address, primary_key: :address
-
-  validates_uniqueness_of :address, allow_nil: true
+  validates :address,    uniqueness: { scope: :currency_id }, if: :address?
+  validates :account_id, uniqueness: true
 
   serialize :details, JSON
 
   before_validation do
-    next unless currency&.code&.bch? && address?
+    next unless currency&.supports_cash_addr_format? && address?
     self.address = CashAddr::Converter.to_legacy_address(address)
   end
 
@@ -24,63 +26,27 @@ class PaymentAddress < ActiveRecord::Base
     if address.blank? && currency.coin?
       AMQPQueue.enqueue(:deposit_coin_address, { account_id: account.id }, { persistent: true })
     end
-  end
-
-  def memo
-    address && address.split('|', 2).last
-  end
-
-  def deposit_address
-    currency[:deposit_account] || address
-  end
-
-  def as_json(options = {})
-    {
-      account_id: account_id,
-      deposit_address: deposit_address
-    }.merge(options)
-  end
-
-  def trigger_deposit_address
-    ::Pusher["private-#{account.member.sn}"].trigger_async('deposit_address', {type: 'create', attributes: as_json})
-  end
-
-  def self.construct_memo(obj)
-    member = obj.is_a?(Account) ? obj.member : obj
-    checksum = member.created_at.to_i.to_s[-3..-1]
-    "#{member.id}#{checksum}"
-  end
-
-  def self.destruct_memo(memo)
-    member_id = memo[0...-3]
-    checksum  = memo[-3..-1]
-
-    member = Member.find_by_id member_id
-    return nil unless member
-    return nil unless member.created_at.to_i.to_s[-3..-1] == checksum
-    member
-  end
-
-  def to_json
-    {address: deposit_address}
+    self
   end
 end
 
 # == Schema Information
-# Schema version: 20180501141718
+# Schema version: 20180529125011
 #
 # Table name: payment_addresses
 #
 #  id          :integer          not null, primary key
-#  account_id  :integer
+#  currency_id :string(10)       not null
+#  account_id  :integer          not null
 #  address     :string(64)
-#  created_at  :datetime
-#  updated_at  :datetime
-#  currency_id :integer
-#  secret      :string(255)
+#  secret      :string(128)
 #  details     :string(1024)     default({}), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 # Indexes
 #
-#  index_payment_addresses_on_currency_id  (currency_id)
+#  index_payment_addresses_on_account_id               (account_id) UNIQUE
+#  index_payment_addresses_on_currency_id              (currency_id)
+#  index_payment_addresses_on_currency_id_and_address  (currency_id,address) UNIQUE
 #

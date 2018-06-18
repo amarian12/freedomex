@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 feature 'show account info', js: true do
-  let!(:member) { create :member, :verified_identity }
+  let!(:member) { create :member, :level_3 }
 
   let!(:bid_account) do
     member.get_account(:usd).tap do |a|

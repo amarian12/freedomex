@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require_dependency 'admin/deposits/base_controller'
 
 module Admin
@@ -6,6 +9,7 @@ module Admin
       def index
         @deposits = ::Deposits::Coin.where(currency: currency)
                                     .includes(:member)
+                                    .includes(:currency)
                                     .where('created_at > ?', 1.year.ago)
                                     .order(id: :desc)
                                     .page(params[:page])

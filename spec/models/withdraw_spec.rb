@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Withdraw do
   describe '#fix_precision' do
     it 'should round down to max precision' do
@@ -16,12 +19,6 @@ describe Withdraw do
         expect(subject).to be_accepted
       end
 
-      it 'should mark withdraw with suspicious history' do
-        subject.account.versions.delete_all
-        subject.audit!
-        expect(subject).to be_suspected
-      end
-
       it 'should accept quick withdraw directly' do
         subject.update_attributes sum: 5
         subject.audit!
@@ -32,7 +29,8 @@ describe Withdraw do
 
   context 'coin withdraw' do
     describe '#audit!' do
-      subject { create(:btc_withdraw) }
+      subject { create(:btc_withdraw, sum: sum) }
+      let(:sum) { 10.to_d }
       before { subject.submit! }
 
       it 'should be rejected if address is invalid' do
@@ -76,18 +74,13 @@ describe Withdraw do
         expect(subject).to be_accepted
       end
 
-      it 'should mark withdraw with suspicious history' do
-        CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: true }))
-        subject.account.versions.delete_all
-        subject.audit!
-        expect(subject).to be_suspected
-      end
-
-      it 'should approve quick withdraw directly' do
-        CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: true }))
-        subject.update_attributes sum: '0.099'
-        subject.audit!
-        expect(subject).to be_processing
+      context 'sum less than quick withdraw limit' do
+        let(:sum) { '0.099'.to_d }
+        it 'should approve quick withdraw directly' do
+          CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: true }))
+          subject.audit!
+          expect(subject).to be_processing
+        end
       end
     end
 
@@ -127,7 +120,7 @@ describe Withdraw do
     it 'transitions to :succeed after calling rpc' do
       CoinAPI.stubs(:[]).returns(@rpc)
 
-      expect { Worker::WithdrawCoin.new.process({ id: subject.id }) }.to change { subject.account.reload.amount }.by(-subject.sum)
+      expect { Worker::WithdrawCoin.new.process({ id: subject.id }) }.to_not change { subject.account.reload.amount }
 
       subject.reload
       expect(subject.succeed?).to be true
@@ -151,6 +144,45 @@ describe Withdraw do
           .and change { subject.account.reload.balance }.by(subject.sum)
     end
   end
+  
+  context 'confirmation of succeeded withdraw' do
+    subject { create(:btc_withdraw) }
+    before do
+      @confirmations = 2
+      @rpc = mock
+      @rpc.stubs(load_balance!: 50_000, create_withdrawal!: '12345', load_deposit!: { confirmations: @confirmations })
+
+      CoinAPI.stubs(:[]).returns(@rpc)
+      subject.submit
+      subject.accept
+      subject.process
+      subject.save!
+      Worker::WithdrawCoin.new.process({ id: subject.id })
+      subject.reload
+    end
+
+    it 'doesn\'t update withdrawal state after calling rpc and getting Exception' do
+      CoinAPI.stubs(:[]).raises(CoinAPI::Error)
+      begin subject.try_to_confirm!; rescue; end
+
+      expect(subject.reload.succeed?).to be true
+    end
+
+    it 'updates state to :confirmed after calling rpc and updates withdrawal confirmations' do
+      expect{ subject.try_to_confirm! }.to change{ subject.account.reload.amount }.by(-subject.sum)
+
+      expect(subject.reload.confirmed?).to be true
+      expect(subject.reload.confirmations).to eq @confirmations
+    end
+
+    it 'doesn\'t update state to :confirmed after calling rpc but getting not enough confirmations' do
+      @rpc.stubs(load_deposit!: { confirmations: 1 })
+      expect{ subject.try_to_confirm! }.to_not change{ subject.account.reload.amount }
+
+      expect(subject.reload.confirmed?).to be false
+      expect(subject.reload.confirmations).to eq 1
+    end
+  end
 
   context 'aasm_state' do
     subject { create(:usd_withdraw, sum: 1000) }
@@ -167,7 +199,6 @@ describe Withdraw do
       subject.submit!
       expect(subject.submitted?).to be true
       expect(subject.sum).to eq subject.account.locked
-      expect(subject.sum).to eq subject.account_versions.last.locked
     end
 
     it 'transitions to :rejected after calling #reject!' do
@@ -267,7 +298,7 @@ describe Withdraw do
     before { Currency.any_instance.expects(:withdraw_fee).once.returns(200) }
     it 'fails validation' do
       expect(withdraw.save).to eq false
-      expect(withdraw.errors.full_messages).to eq ['Amount must be greater than 0']
+      expect(withdraw.errors.full_messages).to eq ['Amount must be greater than 0.0']
     end
   end
 
@@ -276,7 +307,7 @@ describe Withdraw do
   end
 
   it 'doesn\'t generate TID if it is not blank' do
-    expect(create(:btc_withdraw, tid: 'TID1234567890').tid).to eq 'TID1234567890'
+    expect(create(:btc_withdraw, tid: 'TID1234567890xyz').tid).to eq 'TID1234567890xyz'
   end
 
   it 'validates uniqueness of TID' do
@@ -287,6 +318,54 @@ describe Withdraw do
   end
 
   it 'uppercases TID' do
-    expect(create(:btc_withdraw, tid: 'tid').tid).to eq 'TID'
+    record = create(:btc_withdraw)
+    expect(record.tid).to eq record.tid.upcase
+  end
+
+  context 'CashAddr' do
+    let(:member) { create(:member) }
+    let(:account) { member.ac(:bch).tap { |x| x.update!(balance: 1.0.to_d) } }
+    let :record do
+      Withdraws::Coin.new \
+        currency: Currency.find(:bch),
+        member:   member,
+        rid:      address,
+        sum:      1.0.to_d,
+        account:  account
+    end
+
+    context 'valid CashAddr address' do
+      let(:address) { 'bitcoincash:qqkv9wr69ry2p9l53lxp635va4h86wv435995w8p2h' }
+      it { expect(record.save).to eq true }
+    end
+
+    context 'invalid CashAddr address' do
+      let(:address) { 'bitcoincash::qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a' }
+      it do
+        expect(record.save).to eq false
+        expect(record.errors.full_messages).to include 'Rid is invalid'
+      end
+    end
+
+    context 'valid legacy address' do
+      let(:address) { '155fzsEBHy9Ri2bMQ8uuuR3tv1YzcDywd4' }
+      it { expect(record.save).to eq true }
+    end
+
+    context 'invalid legacy address' do
+      let(:address) { '155fzsEBHy9Ri2bMQ8uuuR3tv1YzcDywd400' }
+      it do
+        expect(record.save).to eq false
+        expect(record.errors.full_messages).to include 'Rid is invalid'
+      end
+    end
+  end
+
+  it 'doesn\'t raise exceptions in before_validation callbacks if member doesn\'t exist' do
+    expect { Withdraw.new.validate }.not_to raise_error
+  end
+
+  it 'doesn\'t raise exceptions in before_validation callbacks if currency doesn\'t exist' do
+    expect { Withdraw.new(member: create(:member)).validate }.not_to raise_error
   end
 end

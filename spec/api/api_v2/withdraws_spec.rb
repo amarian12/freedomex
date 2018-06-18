@@ -1,8 +1,11 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe APIv2::Withdraws, type: :request do
-  let(:member) { create(:member, :verified_identity) }
+  let(:member) { create(:member, :level_3) }
   let(:token) { jwt_for(member) }
-  let(:unverified_member) { create(:member, :unverified) }
-  let(:unverified_member_token) { jwt_for(unverified_member) }
+  let(:level_0_member) { create(:member, :level_0) }
+  let(:level_0_member_token) { jwt_for(unverified_member) }
   let(:btc_withdraws) { create_list(:btc_withdraw, 20, member: member) }
   let(:usd_withdraws) { create_list(:usd_withdraw, 20, member: member) }
 
@@ -67,41 +70,6 @@ describe APIv2::Withdraws, type: :request do
       expect(response).to be_success
       results = JSON.parse(response.body)
       expect(results.map { |x| x['id'] }).to eq ordered_withdraws.map(&:id)
-    end
-  end
-
-  describe 'POST /api/v2/withdraws' do
-    it 'should validate withdraw amount' do
-      api_post '/api/v2/withdraws', params: { currency: 'btc', rid: Faker::Bitcoin.address, amount: 'invalid' }, token: token
-      expect(response.code).to eq '422'
-    end
-
-    it 'should validate currency code' do
-      api_post '/api/v2/withdraws', params: { currency: 'invalid', rid: Faker::Bitcoin.address, amount: '1' }, token: token
-      expect(response.code).to eq '422'
-    end
-
-    it 'should create withdraw using downcase currency code' do
-      api_post '/api/v2/withdraws', params: { currency: 'btc', rid: Faker::Bitcoin.address, amount: '1' }, token: token
-      expect(response.code).to eq '201'
-    end
-
-    it 'should create withdraw using upcase currency code' do
-      api_post '/api/v2/withdraws', params: { currency: 'BTC', rid: Faker::Bitcoin.address, amount: '1' }, token: token
-      expect(response.code).to eq '201'
-    end
-
-    it 'should allow to create withdraw where amount is fraction number' do
-      api_post '/api/v2/withdraws', params: { currency: 'BTC', rid: Faker::Bitcoin.address, amount: '0.1' }, token: token
-      expect(response.code).to eq '201'
-      expect(JSON.parse(response.body)['amount'].to_d).to eq '0.1'.to_d
-    end
-
-    it 'sets status to «submitted» after creation' do
-      api_post '/api/v2/withdraws', params: { currency: 'btc', rid: Faker::Bitcoin.address, amount: '1' }, token: token
-      expect(response.code).to eq '201'
-      withdraw = Withdraw.find_by_id(JSON.parse(response.body)['id'])
-      expect(withdraw.aasm_state).to eq 'submitted'
     end
   end
 end

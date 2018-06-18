@@ -1,5 +1,8 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe APIv2::Sessions, type: :request do
-  let(:member) { create(:member, :verified_identity) }
+  let(:member) { create(:member, :level_3) }
   let(:token) { jwt_for(member) }
   let(:session_utils) { Class.new { include SessionUtils }.new }
   after { session_utils.destroy_member_sessions(member.id) }
@@ -41,7 +44,7 @@ describe APIv2::Sessions, type: :request do
       api_post '/api/v2/sessions', token: token
       expect(response.code).to eq '201'
       expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
-      get '/markets/' + Market.visible.first.id + '.json', nil, 'Cookie' => response.headers['Set-Cookie']
+      get '/markets/' + Market.enabled.first.id + '.json', nil, 'Cookie' => response.headers['Set-Cookie']
       expect(response.code).to eq '200'
       expect { JSON.parse(response.body) }.to_not raise_error
     end

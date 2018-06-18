@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require File.expand_path('../boot', __FILE__)
 
 require 'rails'
@@ -15,10 +18,13 @@ module Peatio
   class Application < Rails::Application
 
     # Configure Sentry as early as possible.
-    if ENV['SENTRY_DSN_BACKEND'].present? && ENV['SENTRY_ENV'].to_s.split(',').include?(Rails.env)
+    if ENV['SENTRY_DSN_BACKEND'].present?
       require 'sentry-raven'
       Raven.configure { |config| config.dsn = ENV['SENTRY_DSN_BACKEND'] }
     end
+
+    # Require Scout.
+    require 'scout_apm' if Rails.env.in?(ENV['SCOUT_ENV'].to_s.split(',').map(&:squish))
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -26,7 +32,7 @@ module Peatio
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
+    config.time_zone = ENV.fetch('TIMEZONE')
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]

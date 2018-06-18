@@ -1,26 +1,33 @@
+
 module Benchmark
   class SweatFactory
 
-    @@seq = 0
-
     class <<self
       def make_member
-        @@seq += 1
         member = Member.create!(
-          email: "user#{@@seq}@example.com",
-          name: "Matching Benchmark #{@@seq}"
+          email: Faker::Internet.unique.email
         )
       end
 
       def make_order(klass, attrs={})
         klass.new({
-          bid: Currency.fiats.first.code_ccy_sym,
-          ask: :btc,
+          bid: fiat_currency.id,
+          ask: coin_currency.id,
           state: Order::WAIT,
-          currency: "btc#{Currency.fiats.first.code_ccy}".to_sym,
+          market_id: "btc#{fiat_currency.code}".to_sym,
           origin_volume: attrs[:volume],
-          source: 'Web'
+          ord_type: "limit"
         }.merge(attrs))
+      end
+
+      private
+
+      def fiat_currency
+        @fiat_currency ||= Currency.fiats.first
+      end
+
+      def coin_currency
+        @coin_currency ||= Currency.coins.first
       end
     end
 

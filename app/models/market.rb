@@ -1,3 +1,7 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
+
 # People exchange commodities in markets. Each market focuses on certain
 # commodity pair `{A, B}`. By convention, we call people exchange A for B
 # *sellers* who submit *ask* orders, and people exchange B for A *buyers*
@@ -15,12 +19,10 @@
 
 class Market < ActiveRecord::Base
 
-  attr_readonly :ask_unit, :bid_unit
+  attr_readonly :ask_unit, :bid_unit, :ask_precision, :bid_precision
 
-  # TODO: Don't use default_scope. Refactor to scopes!
-  default_scope { order(position: :asc) }
-
-  scope :visible, -> { where(visible: true) }
+  scope :ordered, -> { order(position: :asc) }
+  scope :enabled, -> { where(enabled: true) }
 
   validate { errors.add(:ask_unit, :invalid) if ask_unit == bid_unit }
   validates :id, uniqueness: { case_sensitive: false }, presence: true
@@ -28,6 +30,8 @@ class Market < ActiveRecord::Base
   validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 0.5 }
   validates :ask_precision, :bid_precision, :position, numericality: { greater_than_or_equal_to: 0, only_integer: true }
   validates :ask_unit, :bid_unit, inclusion: { in: -> (_) { Currency.codes } }
+  validate  :precisions_must_be_same
+  validate  :units_must_be_enabled, if: :enabled?
 
   before_validation(on: :create) { self.id = "#{ask_unit}#{bid_unit}" }
 
@@ -78,18 +82,6 @@ class Market < ActiveRecord::Base
   def trades; global.trades end
   def ticker; global.ticker end
 
-  def scope?(account_or_currency)
-    code = if account_or_currency.is_a? Account
-             account_or_currency.currency
-           elsif account_or_currency.is_a? Currency
-             account_or_currency.code
-           else
-             account_or_currency
-           end
-
-    ask_unit == code || bid_unit == code
-  end
-
   def unit_info
     {name: name, base_unit: ask_unit, quote_unit: bid_unit}
   end
@@ -97,10 +89,25 @@ class Market < ActiveRecord::Base
   def global
     Global[id]
   end
+
+private
+
+  def precisions_must_be_same
+    if ask_precision? && bid_precision? && ask_precision != bid_precision
+      errors.add(:ask_precision, :invalid)
+      errors.add(:bid_precision, :invalid)
+    end
+  end
+
+  def units_must_be_enabled
+    %i[bid_unit ask_unit].each do |unit|
+      errors.add(unit, 'is not enabled.') if Currency.lock.find_by_id(public_send(unit))&.disabled?
+    end
+  end
 end
 
 # == Schema Information
-# Schema version: 20180501141718
+# Schema version: 20180605104154
 #
 # Table name: markets
 #
@@ -109,10 +116,10 @@ end
 #  bid_unit      :string(5)        not null
 #  ask_fee       :decimal(17, 16)  default(0.0), not null
 #  bid_fee       :decimal(17, 16)  default(0.0), not null
-#  ask_precision :integer          default(4), not null
-#  bid_precision :integer          default(4), not null
+#  ask_precision :integer          default(8), not null
+#  bid_precision :integer          default(8), not null
 #  position      :integer          default(0), not null
-#  visible       :integer          default(1), not null
+#  enabled       :boolean          default(TRUE), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
@@ -121,6 +128,6 @@ end
 #  index_markets_on_ask_unit               (ask_unit)
 #  index_markets_on_ask_unit_and_bid_unit  (ask_unit,bid_unit) UNIQUE
 #  index_markets_on_bid_unit               (bid_unit)
+#  index_markets_on_enabled                (enabled)
 #  index_markets_on_position               (position)
-#  index_markets_on_visible                (visible)
 #

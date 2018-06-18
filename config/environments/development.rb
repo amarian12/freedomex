@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require File.expand_path('../shared', __FILE__)
 
 Rails.application.configure do
@@ -25,11 +28,6 @@ Rails.application.configure do
 
   config.active_record.default_timezone = :local
 
-  require 'middleware/i18n_js'
-  require 'middleware/security'
-  config.middleware.insert_before ActionDispatch::Static, Middleware::I18nJs
-  config.middleware.insert_before Rack::Runtime, Middleware::Security
-
   # Asset digests allow you to set far-future HTTP expiration dates on all assets,
   # yet still be able to expire them through the digest params.
   config.assets.digest = true
@@ -41,11 +39,4 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-
-  # Bullet gem config
-  config.after_initialize do
-    Bullet.enable = ENV['BULLET'].in?(%w[1 true])
-    Bullet.bullet_logger = true
-    Bullet.add_footer = true
-  end
 end

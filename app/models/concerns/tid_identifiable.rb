@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module TIDIdentifiable
   extend ActiveSupport::Concern
 
@@ -10,7 +13,5 @@ module TIDIdentifiable
         self.tid = "TID#{SecureRandom.hex(5).upcase}"
       end while self.class.where(tid: tid).any?
     end
-
-    before_validation { self.tid = tid.to_s.upcase }
   end
 end

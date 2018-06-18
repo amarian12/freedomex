@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require_dependency 'api_v2/errors'
 require_dependency 'api_v2/validations'
 require_dependency 'api_v2/withdraws'
@@ -22,7 +25,7 @@ module APIv2
     logger.formatter = GrapeLogging::Formatters::Rails.new
     use GrapeLogging::Middleware::RequestLogger,
         logger:    logger,
-        log_level: :debug,
+        log_level: :info,
         include:   [GrapeLogging::Loggers::Response.new,
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,
@@ -48,6 +51,7 @@ module APIv2
     mount APIv2::Sessions
     mount APIv2::Solvency
     mount APIv2::Fees
+    mount APIv2::Pusher
 
     # The documentation is accessible at http://localhost:3000/swagger?url=/api/v2/swagger
     add_swagger_documentation base_path:   PREFIX,

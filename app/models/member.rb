@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require 'securerandom'
 
 class Member < ActiveRecord::Base
@@ -6,35 +9,40 @@ class Member < ActiveRecord::Base
   has_many :payment_addresses, through: :accounts
   has_many :withdraws, -> { order(id: :desc) }
   has_many :deposits, -> { order(id: :desc) }
-
-  has_many :authentications, dependent: :destroy
+  has_many :authentications, dependent: :delete_all
 
   scope :enabled, -> { where(disabled: false) }
 
-  before_validation :sanitize, :assign_sn
+  before_validation :downcase_email, :assign_sn
 
-  validates :sn, presence: true, uniqueness: true
+  validates :sn,    presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true, email: true
+  validates :level, numericality: { greater_than_or_equal_to: 0 }
 
-  after_create  :touch_accounts
-  after_update  :sync_update
+  after_create :touch_accounts
 
   attr_readonly :email
 
   class << self
     def from_auth(auth_hash)
-      (locate_auth(auth_hash) || locate_email(auth_hash) || Member.new).tap do |member|
+      member = locate_auth(auth_hash) || locate_email(auth_hash) || Member.new
+      member.tap do |member|
         member.transaction do
           info_hash       = auth_hash.fetch('info')
           member.email    = info_hash.fetch('email')
-          member.level    = Member::Levels.get(info_hash['level']) if info_hash.key?('level')
+          member.level    = info_hash['level'] if info_hash.key?('level')
           member.disabled = info_hash.key?('state') && info_hash['state'] != 'active'
           member.save!
-          auth = Authentication.locate(auth_hash) || member.authentications.build_auth(auth_hash)
+          auth = Authentication.locate(auth_hash) || member.authentications.from_omniauth_data(auth_hash)
           auth.token = auth_hash.dig('credentials', 'token')
           auth.save!
         end
       end
+    rescue => e
+      report_exception(e)
+      Rails.logger.debug { "OmniAuth data: #{auth_hash.to_json}." }
+      Rails.logger.debug { "Member: #{member.to_json}." } if member
+      raise e
     end
 
     def current
@@ -79,22 +87,10 @@ class Member < ActiveRecord::Base
     @is_admin ||= self.class.admins.include?(self.email)
   end
 
-  def trigger(event, data)
-    AMQPQueue.enqueue(:pusher_member, {member_id: id, event: event, data: data})
-  end
-
-  def notify(event, data)
-    ::Pusher["private-#{sn}"].trigger_async event, data
-  end
-
-  def to_s
-    "#{email} - #{sn}"
-  end
-
-  def get_account(model_or_code)
-    accounts.with_currency(model_or_code).first.yield_self do |account|
+  def get_account(model_or_id_or_code)
+    accounts.with_currency(model_or_id_or_code).first.yield_self do |account|
       touch_accounts unless account
-      accounts.with_currency(model_or_code).first
+      accounts.with_currency(model_or_id_or_code).first
     end
   end
   alias :ac :get_account
@@ -102,7 +98,7 @@ class Member < ActiveRecord::Base
   def touch_accounts
     Currency.find_each do |currency|
       next if accounts.where(currency: currency).exists?
-      accounts.create!(currency: currency, balance: 0, locked: 0)
+      accounts.create!(currency: currency)
     end
   end
 
@@ -118,24 +114,18 @@ class Member < ActiveRecord::Base
     auth(name).destroy
   end
 
-  def as_json(options = {})
-    super(options).merge({
-      "memo" => self.id
-    })
-  end
-
-  def level
-    self[:level].to_s.inquiry
-  end
-
   def uid
-    authentications.barong.first&.uid || email
+    self.class.uid(self)
   end
 
-  private
+  def trigger_pusher_event(event, data)
+    self.class.trigger_pusher_event(self, event, data)
+  end
 
-  def sanitize
-    self.email.try(:downcase!)
+private
+
+  def downcase_email
+    self.email = email.try(:downcase)
   end
 
   def assign_sn
@@ -144,23 +134,38 @@ class Member < ActiveRecord::Base
       self.sn = random_sn
     end while Member.where(sn: self.sn).any?
   end
-  
+
   def random_sn
     "SN#{SecureRandom.hex(5).upcase}"
   end
-  
-  def sync_update
-    ::Pusher["private-#{sn}"].trigger_async('members', { type: 'update', id: self.id, attributes: changed_attributes })
+
+  class << self
+    def uid(member_or_id)
+      id  = self === member_or_id ? member_or_id.id : member_or_id
+      uid = Authentication.barong.where(member_id: id).limit(1).pluck(:uid).first
+      if uid.blank?
+        self === member_or_id ? member_or_id.email : Member.where(id: id).limit(1).pluck(:email).first
+      else
+        uid
+      end
+    end
+
+    def trigger_pusher_event(member_or_id, event, data)
+      AMQPQueue.enqueue :pusher_member, \
+        member_id: self === member_or_id ? member_or_id.id : member_or_id,
+        event:     event,
+        data:      data
+    end
   end
 end
 
 # == Schema Information
-# Schema version: 20180216145412
+# Schema version: 20180530122201
 #
 # Table name: members
 #
 #  id           :integer          not null, primary key
-#  level        :string(20)       default("")
+#  level        :integer          default(0), not null
 #  sn           :string(12)       not null
 #  email        :string(255)      not null
 #  disabled     :boolean          default(FALSE), not null
@@ -170,5 +175,7 @@ end
 #
 # Indexes
 #
-#  index_members_on_sn  (sn) UNIQUE
+#  index_members_on_disabled  (disabled)
+#  index_members_on_email     (email) UNIQUE
+#  index_members_on_sn        (sn) UNIQUE
 #

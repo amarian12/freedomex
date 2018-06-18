@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Market do
-  context 'visible market' do
-    it { expect(Market.visible.count).to eq(1) }
+  context 'enabled market' do
+    it { expect(Market.enabled.count).to eq(2) }
   end
 
   context 'market attributes' do
@@ -22,8 +25,8 @@ describe Market do
       expect(subject.quote_unit).to eq 'usd'
     end
 
-    it 'visible' do
-      expect(subject.visible).to be true
+    it 'enabled' do
+      expect(subject.enabled).to be true
     end
   end
 
@@ -53,10 +56,12 @@ describe Market do
         bid_unit:      :xrp,
         bid_fee:       0.1,
         ask_fee:       0.2,
-        ask_precision: 3,
+        ask_precision: 4,
         bid_precision: 4,
         position:      100 }
     end
+
+    let(:disabled_currency) { Currency.find_by_id(:eur) }
 
     it 'creates valid record' do
       record = Market.new(valid_attributes)
@@ -104,6 +109,21 @@ describe Market do
         record = Market.new(valid_attributes.merge(field => :bad))
         record.save
         expect(record.errors.full_messages).to include(/#{to_readable(field)} is not included in the list/i)
+      end
+    end
+
+    it 'validates if both currencies enabled on enabled market creation' do
+      %i[bid_unit ask_unit].each do |field|
+        record = Market.new(valid_attributes.merge(field => disabled_currency.code))
+        record.save
+        expect(record.errors.full_messages).to include(/#{to_readable(field)} is not enabled/i)
+      end
+    end
+
+    it 'doesn\'t validate if both currencies enabled on disabled market creation' do
+      %i[bid_unit ask_unit].each do |field|
+        record = Market.new(valid_attributes.merge(field => disabled_currency.code, enabled: false))
+        expect(record.save).to eq true
       end
     end
 

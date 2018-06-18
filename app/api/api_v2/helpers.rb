@@ -1,30 +1,36 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   module Helpers
+    extend Memoist
+
     def authenticate!
       current_user or raise AuthorizationError
     end
 
-    def email_must_be_verified!
-      if current_user.level? && !current_user.level.in?(%w[ email_verified phone_verified identity_verified ])
-        raise Grape::Exceptions::Base.new(text: 'Please, verify your E-Mail address.', status: 401)
+    def deposits_must_be_permitted!
+      if current_user.level < ENV.fetch('MINIMUM_MEMBER_LEVEL_FOR_DEPOSIT').to_i
+        raise Grape::Exceptions::Base.new(text: 'Please, pass the corresponding verification steps to deposit funds.', status: 401)
       end
     end
 
-    def phone_must_be_verified!
-      if current_user.level? && !current_user.level.in?(%w[ email_verified phone_verified ])
-        raise Grape::Exceptions::Base.new(text: 'Please, verify your phone.', status: 401)
+    def withdraws_must_be_permitted!
+      if current_user.level < ENV.fetch('MINIMUM_MEMBER_LEVEL_FOR_WITHDRAW').to_i
+        raise Grape::Exceptions::Base.new(text: 'Please, pass the corresponding verification steps to withdraw funds.', status: 401)
       end
     end
 
-    def identity_must_be_verified!
-      if current_user.level? && !current_user.level.identity_verified?
-        raise Grape::Exceptions::Base.new(text: 'Please, verify your identity.', status: 401)
+    def trading_must_be_permitted!
+      if current_user.level < ENV.fetch('MINIMUM_MEMBER_LEVEL_FOR_TRADING').to_i
+        raise Grape::Exceptions::Base.new(text: 'Please, pass the corresponding verification steps to enable trading.', status: 401)
       end
     end
 
     def redis
-      @r ||= KlineDB.redis
+      KlineDB.redis
     end
+    memoize :redis
 
     def current_user
       # JWT authentication provides member email.
@@ -32,51 +38,46 @@ module APIv2
         Member.find_by_email(env['api_v2.authentic_member_email'])
       end
     end
+    memoize :current_user
 
     def current_market
-      @current_market ||= Market.find params[:market]
+      Market.enabled.find_by_id(params[:market])
     end
+    memoize :current_market
 
     def time_to
       params[:timestamp].present? ? Time.at(params[:timestamp]) : nil
     end
 
     def build_order(attrs)
-      klass = attrs[:side] == 'sell' ? OrderAsk : OrderBid
-
-      order = klass.new(
-        source:        'APIv2',
+      (attrs[:side] == 'sell' ? OrderAsk : OrderBid).new \
         state:         ::Order::WAIT,
-        member_id:     current_user.id,
-        ask:           Currency.find_by!(code: current_market.base_unit).id,
-        bid:           Currency.find_by!(code: current_market.quote_unit).id,
-        market_id:     current_market.id,
+        member:        current_user,
+        ask:           current_market&.base_unit,
+        bid:           current_market&.quote_unit,
+        market:        current_market,
         ord_type:      attrs[:ord_type] || 'limit',
         price:         attrs[:price],
         volume:        attrs[:volume],
         origin_volume: attrs[:volume]
-      )
     end
 
     def create_order(attrs)
-      order = build_order attrs
+      order = build_order(attrs)
       Ordering.new(order).submit
       order
-    rescue
-      Rails.logger.info "Failed to create order: #{$!}"
-      Rails.logger.debug order.inspect
-      Rails.logger.debug $!.backtrace.join("\n")
-      raise CreateOrderError, $!
+    rescue => e
+      report_exception_to_screen(e)
+      raise CreateOrderError, e.inspect
     end
 
     def create_orders(multi_attrs)
-      orders = multi_attrs.map {|attrs| build_order attrs }
+      orders = multi_attrs.map(&method(:build_order))
       Ordering.new(orders).submit
       orders
-    rescue
-      Rails.logger.info "Failed to create order: #{$!}"
-      Rails.logger.debug $!.backtrace.join("\n")
-      raise CreateOrderError, $!
+    rescue => e
+      report_exception_to_screen(e)
+      raise CreateOrderError, e.inspect
     end
 
     def order_param
@@ -100,10 +101,11 @@ module APIv2
       key = "peatio:#{params[:market]}:k:#{params[:period]}"
 
       if params[:timestamp]
-        ts = JSON.parse(redis.lindex(key, 0)).first
+        ts_json = redis.lindex(key, 0)
+        return [] if ts_json.blank?
+        ts = JSON.parse(ts_json).first
         offset = (params[:timestamp] - ts) / 60 / params[:period]
         offset = 0 if offset < 0
-
         JSON.parse('[%s]' % redis.lrange(key, offset, offset + params[:limit] - 1).join(','))
       else
         length = redis.llen(key)

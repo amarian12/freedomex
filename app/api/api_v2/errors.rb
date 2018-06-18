@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
 
   module ExceptionHandlers
@@ -26,6 +29,12 @@ module APIv2
       @status  = opts[:status] || 400
       @message = {error: {code: @code, message: @text}}
     end
+
+    def inspect
+      message  = @text
+      message += " (#{@reason})" if @reason.present?
+      %[#<#{self.class.name}: #{message}>]
+    end
   end
 
   class AuthorizationError < Error
@@ -39,13 +48,13 @@ module APIv2
 
   class CreateOrderError < Error
     def initialize(e)
-      super code: 2002, text: "Failed to create order. Reason: #{e}", status: 422
+      super code: 2002, text: 'Failed to create order.', status: 422
     end
   end
 
   class CancelOrderError < Error
     def initialize(e)
-      super code: 2003, text: "Failed to cancel order. Reason: #{e}", status: 422
+      super code: 2003, text: 'Failed to cancel order.', status: 422
     end
   end
 

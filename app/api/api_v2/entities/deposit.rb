@@ -1,8 +1,11 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   module Entities
     class Deposit < Base
       expose :id, documentation: "Unique deposit id."
-      expose(:currency) { |deposit| deposit.currency.code }
+      expose :currency_id, as: :currency
       expose :amount, format_with: :decimal
       expose :fee
       expose :txid

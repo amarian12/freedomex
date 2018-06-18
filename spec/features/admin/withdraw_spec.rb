@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 feature 'Withdraw', js: true do
-  let!(:member) { create(:member, :verified_identity) }
-  let!(:admin_member) { create(:member, :verified_identity, email: Member.admins.first) }
+  let!(:member) { create(:member, :level_3) }
+  let!(:admin_member) { create(:member, :level_3, email: Member.admins.first) }
   let!(:usd_account) { member.get_account(:usd).tap { |a| a.update!(locked: 8000, balance: 10_000) } }
   let!(:btc_account) { member.get_account(:btc).tap { |a| a.update!(locked: 10, balance: 50) } }
   let!(:usd_withdraw) { create(:usd_withdraw, member: member, sum: 5000, aasm_state: :accepted, account: usd_account) }
@@ -34,7 +37,7 @@ feature 'Withdraw', js: true do
     click_link I18n.t('actions.view')
     page.within_window windows.last do
       click_on I18n.t('actions.process')
-      expect(current_path).to eq(admin_withdraw_path(currency: usd_account.currency.code, id: usd_account.id))
+      expect(current_path).to eq(admin_withdraw_path(currency: usd_account.currency.code, id: usd_withdraw.id))
     end
     expect(usd_account.reload.locked).to be_d '3000'
     expect(usd_account.reload.balance).to be_d '10000'
@@ -46,7 +49,7 @@ feature 'Withdraw', js: true do
     click_on I18n.t('actions.view')
     page.within_window windows.last do
       click_on I18n.t('actions.reject')
-      expect(current_path).to eq(admin_withdraw_path(currency: usd_account.currency.code, id: usd_account.id))
+      expect(current_path).to eq(admin_withdraw_path(currency: usd_account.currency.code, id: usd_withdraw.id))
     end
     expect(usd_account.reload.locked).to be_d '3000'
     expect(usd_account.reload.balance).to be_d '15000.0000'
@@ -70,7 +73,7 @@ feature 'Withdraw', js: true do
     click_link I18n.t('actions.view')
     page.within_window windows.last do
       click_on I18n.t('actions.process')
-      expect(current_path).to eq(admin_withdraw_path(currency: btc_account.currency.code, id: btc_account.id))
+      expect(current_path).to eq(admin_withdraw_path(currency: btc_account.currency.code, id: btc_withdraw.id))
     end
     expect(btc_account.reload.locked).to be_d '10'
     expect(btc_account.reload.balance).to be_d '50'

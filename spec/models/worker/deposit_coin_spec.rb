@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Worker::DepositCoin do
   around do |example|
     WebMock.disable_net_connect!
@@ -50,10 +53,19 @@ describe Worker::DepositCoin do
       stub_request(:post, 'http://127.0.0.1:18332/').with(body: request_body).to_return(body: response_body)
     end
 
-    it 'should create 2 deposits' do
+    it 'creates 2 deposits' do
       expect {
         worker.process(payload)
       }.to change(Deposit, :count).by(2)
+    end
+
+    context 'sendmany transaction with addresses not belonging to Peatio' do
+      before do
+        response_body[:result][:details] << { account:  'payment',
+                                              address:  '2NExB34JEV7VqphrurPciYemZDsveP9MPxo',
+                                              category: 'receive',
+                                              amount:   10 }
+      end
     end
   end
 end

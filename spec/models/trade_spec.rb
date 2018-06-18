@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Trade, '.latest_price' do
   context 'no trade' do
     it { expect(Trade.latest_price(:btcusd)).to be_d '0.0' }
@@ -10,7 +13,7 @@ describe Trade, '.latest_price' do
 end
 
 describe Trade, '.collect_side' do
-  let(:member) { create(:member, :verified_identity) }
+  let(:member) { create(:member, :level_3) }
   let(:ask)    { create(:order_ask, member: member) }
   let(:bid)    { create(:order_bid, member: member) }
 

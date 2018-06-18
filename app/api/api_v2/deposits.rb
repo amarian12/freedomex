@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require_relative 'validations'
 
 module APIv2
@@ -5,18 +8,18 @@ module APIv2
     helpers ::APIv2::NamedParams
 
     before { authenticate! }
-    before { identity_must_be_verified! }
+    before { deposits_must_be_permitted! }
 
     desc 'Get your deposits history.'
     params do
-      optional :currency, type: String, values: -> { Currency.codes(bothcase: true) }, desc: -> { "Currency value contains #{Currency.codes(bothcase: true).join(',')}" }
+      optional :currency, type: String, values: -> { Currency.enabled.codes(bothcase: true) }, desc: -> { "Currency value contains #{Currency.enabled.codes(bothcase: true).join(',')}" }
       optional :limit, type: Integer, range: 1..100, default: 3, desc: "Set result limit."
       optional :state, type: String, values: -> { Deposit::STATES.map(&:to_s) }
     end
     get "/deposits" do
-      deposits = current_user.deposits.limit(params[:limit]).recent
+      deposits = current_user.deposits.includes(:currency).limit(params[:limit]).recent
       deposits = deposits.with_currency(params[:currency]) if params[:currency]
-      deposits = deposits.with_aasm_state(params[:state]) if params[:state].present?
+      deposits = deposits.where(aasm_state: params[:state]) if params[:state].present?
       present deposits, with: APIv2::Entities::Deposit
     end
 
@@ -33,10 +36,12 @@ module APIv2
 
     desc 'Where to deposit. The address field could be empty when a new address is generating (e.g. for bitcoin), you should try again later in that case.'
     params do
-      requires :currency, type: String, values: -> { Currency.codes(bothcase: true) }, desc: -> { "The account to which you want to deposit. Available values: #{Currency.codes(bothcase: true).join(', ')}" }
+      requires :currency, type: String, values: -> { Currency.coins.enabled.codes(bothcase: true) }, desc: -> { "The account to which you want to deposit. Available values: #{Currency.coins.enabled.codes(bothcase: true).join(', ')}" }
     end
     get "/deposit_address" do
-      current_user.ac(params[:currency]).payment_address.to_json
+      current_user.ac(params[:currency]).payment_address.yield_self do |pa|
+        { currency: params[:currency], address: pa.address }
+      end
     end
   end
 end

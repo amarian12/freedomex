@@ -1,10 +1,13 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module Admin
   class ProofsController < BaseController
     load_and_authorize_resource
 
     def index
       @grid = ProofsGrid.new(params[:proofs_grid])
-      @assets = @grid.assets.page(params[:page])
+      @assets = @grid.assets.includes(:currency).page(params[:page])
     end
 
     def edit

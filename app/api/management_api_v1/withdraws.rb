@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module ManagementAPIv1
   class Withdraws < Grape::API
 
@@ -9,14 +12,10 @@ module ManagementAPIv1
               withdraw.submit!
               # Process fiat withdraw immediately. Crypto withdraws will be processed by workers.
               if withdraw.fiat?
-                if withdraw.account.examine
-                  withdraw.accept!
-                  if withdraw.quick?
-                    withdraw.process!
-                    withdraw.success!
-                  end
-                else
-                  withdraw.suspect!
+                withdraw.accept!
+                if withdraw.quick?
+                  withdraw.process!
+                  withdraw.success!
                 end
               end
             when 'cancel'
@@ -38,16 +37,12 @@ module ManagementAPIv1
       optional :state,    type: String,  values: -> { Withdraw::STATES.map(&:to_s) }, desc: 'The state to filter by.'
     end
     post '/withdraws' do
-      if params[:currency].present?
-        currency = Currency.find_by!(code: params[:currency])
-      end
-
-      if params[:uid].present?
-        member = Authentication.find_by!(provider: :barong, uid: params[:uid]).member
-      end
+      currency = Currency.find(params[:currency]) if params[:currency].present?
+      member   = Authentication.find_by!(provider: :barong, uid: params[:uid]).member if params[:uid].present?
 
       Withdraw
         .order(id: :desc)
+        .includes(:currency)
         .tap { |q| q.where!(currency: currency) if currency }
         .tap { |q| q.where!(member: member) if member }
         .tap { |q| q.where!(aasm_state: params[:state]) if params[:state] }
@@ -90,7 +85,7 @@ module ManagementAPIv1
       optional :action,   type: String, values: %w[process], desc: 'The action to perform.'
     end
     post '/withdraws/new' do
-      currency = Currency.find_by!(code: params[:currency])
+      currency = Currency.find(params[:currency])
       member   = Authentication.find_by(provider: :barong, uid: params[:uid])&.member
       withdraw = "withdraws/#{currency.type}".camelize.constantize.new \
         sum:            params[:amount],

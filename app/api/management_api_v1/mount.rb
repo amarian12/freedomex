@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module ManagementAPIv1
   class Mount < Grape::API
     PREFIX = '/management_api'
@@ -16,7 +19,6 @@ module ManagementAPIv1
 
     rescue_from ManagementAPIv1::Exceptions::Base do |e|
       ManagementAPIv1::Mount.logger.error { e.inspect }
-      ManagementAPIv1::Mount.logger.debug { e.debug_message } unless e.debug_message.blank?
       error!(e.message, e.status, e.headers)
     end
 
@@ -35,7 +37,7 @@ module ManagementAPIv1
     logger.formatter = GrapeLogging::Formatters::Rails.new
     use GrapeLogging::Middleware::RequestLogger,
         logger:    logger,
-        log_level: :debug,
+        log_level: :info,
         include:   [GrapeLogging::Loggers::Response.new,
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,

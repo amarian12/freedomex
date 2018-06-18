@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 namespace :admin do
   get '/', to: 'dashboard#index', as: :dashboard
 
@@ -14,12 +17,4 @@ namespace :admin do
 
   resources 'deposits/:currency',  to: AdminDepositsRouter.new,  as: 'deposit'
   resources 'withdraws/:currency', to: AdminWithdrawsRouter.new, as: 'withdraw'
-
-  namespace :statistic do
-    resource :members, only: :show
-    resource :orders, only: :show
-    resource :trades, only: :show
-    resource :deposits, only: :show
-    resource :withdraws, only: :show
-  end
 end

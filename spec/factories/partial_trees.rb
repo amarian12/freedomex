@@ -1,9 +1,10 @@
-# Read about factories at https://github.com/thoughtbot/factory_bot
+# encoding: UTF-8
+# frozen_string_literal: true
 
 FactoryBot.define do
   factory :partial_tree do
-    json 'partial_tree: {}'
-    proof_id 1
-    account_id 1
+    json { '{"partial_tree": {}}' }
+    proof { create(:proof) }
+    account { create_account }
   end
 end

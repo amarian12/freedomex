@@ -1,8 +1,11 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 describe Deposit do
   let(:member) { create(:member) }
   let(:amount) { 100.to_d }
   let(:deposit) { create(:deposit_usd, member: member, amount: amount, currency: currency) }
-  let(:currency) { Currency.find_by!(code: :usd) }
+  let(:currency) { Currency.find(:usd) }
 
   it 'computes fee' do
     expect(deposit.fee).to eql 0.to_d
@@ -24,7 +27,7 @@ describe Deposit do
     let(:deposit) { build(:deposit_usd, member: member, amount: amount, currency: currency) }
     it 'fails validation' do
       expect(deposit.save).to eq false
-      expect(deposit.errors.full_messages).to eq ['Amount must be greater than 0']
+      expect(deposit.errors.full_messages).to eq ['Amount must be greater than 0.0']
     end
   end
 
@@ -33,7 +36,7 @@ describe Deposit do
   end
 
   it 'doesn\'t generate TID if it is not blank' do
-    expect(create(:deposit_btc, tid: 'TID1234567890').tid).to eq 'TID1234567890'
+    expect(create(:deposit_btc, tid: 'TID1234567890xyz').tid).to eq 'TID1234567890xyz'
   end
 
   it 'validates uniqueness of TID' do
@@ -43,7 +46,8 @@ describe Deposit do
     expect(record2.errors.full_messages.first).to match(/tid has already been taken/i)
   end
 
-  it 'uppercases TID' do
-    expect(create(:deposit_btc, tid: 'tid').tid).to eq 'TID'
+  it 'uppercases automatically generated TID' do
+    record = create(:deposit_btc)
+    expect(record.tid).to eq record.tid.upcase
   end
 end

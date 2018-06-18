@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 namespace :barong do
   desc 'Refresh access level for Barong members.'
   task levels: :environment do
@@ -15,7 +18,7 @@ namespace :barong do
 
         profile       = JSON.parse(Faraday.get(url, nil, 'Authorization' => "Bearer #{auth.token}").assert_success!.body)
         current_level = auth.member.level
-        new_level     = Member::Levels.from_numerical_barong_level(profile.fetch('level'))
+        new_level     = profile.fetch('level')
 
         unless current_level == new_level
           auth.member.update!(level: new_level)

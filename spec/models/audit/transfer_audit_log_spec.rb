@@ -1,8 +1,11 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module Audit
   describe TransferAuditLog do
     describe '.audit!' do
-      let(:member) { create(:member, :verified_identity) }
-      let(:deposit) { create(:deposit_btc, member: member, currency: Currency.find_by!(code: :btc)) }
+      let(:member) { create(:member, :level_3) }
+      let(:deposit) { create(:deposit_btc, member: member, currency: Currency.find(:btc)) }
       let(:log) { TransferAuditLog.audit!(deposit, member) }
 
       before do

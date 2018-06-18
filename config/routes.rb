@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 # Explicitly require "lib/peatio.rb".
 # You may be surprised why this line also sits in config/application.rb.
 # The same line sits in config/application.rb to allows early access to lib/peatio.rb.
@@ -18,7 +21,6 @@ end
 Peatio::Application.routes.draw do
 
   root 'welcome#index'
-
   get '/signout' => 'sessions#destroy', :as => :signout
   get '/auth/failure' => 'sessions#failure', :as => :failure
   match '/auth/:provider/callback' => 'sessions#create', via: %i[get post]
@@ -39,8 +41,6 @@ Peatio::Application.routes.draw do
     end
 
     resources 'withdraws/:currency', controller: 'withdraws', as: 'withdraw', only: %i[ create destroy ]
-
-    resources :account_versions, only: :index
 
     resources :exchange_assets, controller: 'assets'
 
@@ -68,6 +68,9 @@ Peatio::Application.routes.draw do
 
     post '/pusher/auth', to: 'pusher#auth'
   end
+
+  get 'health/alive', to: 'public/health#alive'
+  get 'health/ready', to: 'public/health#ready'
 
   get 'trading/:market_id', to: BlackHoleRouter.new, as: :trading
 

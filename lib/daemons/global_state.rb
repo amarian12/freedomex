@@ -1,18 +1,23 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require File.join(ENV.fetch('RAILS_ROOT'), 'config', 'environment')
 
 $running = true
-Signal.trap("TERM") do
-  $running = false
-end
+Signal.trap(:TERM) { $running = false }
 
-while($running) do
-  all_tickers = {}
-  Market.all.each do |market|
+while $running do
+  tickers = {}
+  # NOTE: Turn off push notifications for disabled markets.
+  Market.enabled.each do |market|
     global = Global[market.id]
-    global.trigger_orderbook
-    all_tickers[market.id] = market.unit_info.merge(global.ticker)
+    Pusher.trigger("market-#{market.id}-global", :update, asks: global.asks, bids: global.bids)
+    tickers[market.id] = market.unit_info.merge(global.ticker)
   end
-  Global.trigger 'tickers', all_tickers
 
-  sleep 3
+  Pusher.trigger('market-global', :tickers, tickers)
+
+  tickers.clear
+
+  Kernel.sleep 5
 end

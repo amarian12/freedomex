@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 ENV['ADMIN'] ||= 'admin@peatio.tech'
@@ -85,7 +88,7 @@ RSpec.configure do |config|
     AMQPQueue.stubs(:publish)
     KlineDB.stubs(:kline).returns([])
     I18n.locale = :en
-    %i[ usd btc dash eth xrp trst].each { |ccy| FactoryBot.create(:currency, ccy) }
+    %i[ usd btc dash eth xrp trst bch eur ].each { |ccy| FactoryBot.create(:currency, ccy) }
     %i[ btcusd dashbtc ].each { |market| FactoryBot.create(:market, market) }
   end
 
@@ -95,17 +98,6 @@ RSpec.configure do |config|
 
   config.append_after :each do
     DatabaseCleaner.clean
-  end
-
-  if Bullet.enable?
-    config.before :each do
-      Bullet.start_request
-    end
-
-    config.after :each do
-      Bullet.perform_out_of_channel_notifications if Bullet.notification?
-      Bullet.end_request
-    end
   end
 
   config.verbose_retry = true

@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module APIv2
   class AuthTest < Grape::API
     get('/auth_test') do
@@ -13,7 +16,7 @@ end
 
 describe APIv2::Helpers, type: :request do
   context '#authentic?' do
-    let!(:member) { create(:member, :verified_identity) }
+    let!(:member) { create(:member, :level_3) }
     let!(:token) { jwt_for(member) }
 
     context 'Authenticate using headers' do

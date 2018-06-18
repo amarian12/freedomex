@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module ManagementAPIv1
   module Exceptions
     class Base < StandardError
@@ -16,6 +19,11 @@ module ManagementAPIv1
 
       def status
         @options.fetch(:status)
+      end
+
+      # Change "#<Exception: message>" to "#<Exception: message (debug_message)>".
+      def inspect
+        debug_message.present? ? super.gsub(/>\z/, " (#{debug_message})>") : super
       end
     end
   end

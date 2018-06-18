@@ -15,7 +15,7 @@ module Benchmark
         m.get_account(:btc).update!(locked: 100)
       end
       @members[:bid].each do |m|
-        m.get_account(Currency.fiats.first.code_ccy_sym).update!(locked: 1000000)
+        m.get_account(Currency.fiats.first.code).update!(locked: 1000000)
       end
     end
 
@@ -62,12 +62,25 @@ module Benchmark
     def execute_trades
       t1 = Trade.count
 
-      @instructions.each do |payload|
-        ::Matching::Executor.new(payload).execute!
-      end
+      @instructions.each_with_index do |payload, i|
+        unless Process.fork
+          ActiveRecord::Base.connection.reconnect!
+          puts "Executor #{i+1} started."
 
+          t1 = Time.now
+          ::Matching::Executor.new(payload).execute!
+
+          puts "Executor #{i+1} finished work, stop."
+          exit 0
+        end
+      end
+      pid_and_status = Process.waitall
+
+      ActiveRecord::Base.connection.reconnect!
       @trades = Trade.count - t1
     end
+
+
 
   end
 end

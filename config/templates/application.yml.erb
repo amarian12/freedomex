@@ -6,10 +6,10 @@ defaults: &defaults
   REDIS_PASSWORD: ~ # By default no password is sent to Redis server. Change this if you want to connect using password.
 
   # Comma-separated list of administrators.
-  ADMIN: 'admin@peatio.tech'
+  ADMIN: 'admin@barong.io'
 
   # Application URL configuration variables.
-  URL_HOST:                peatio.io
+  URL_HOST:                freedomex.io
   URL_SCHEME:              http
   FORCE_SECURE_CONNECTION: 'false' # Set to "true" to disable access via unsecured HTTP, send HSTS headers and use secure cookies.
 
@@ -61,10 +61,10 @@ defaults: &defaults
   #
   # Barong uses Doorkeeper under the hood so you can refer to it's docs any time.
   # See more information at https://github.com/doorkeeper-gem/doorkeeper/wiki/Testing-your-provider-with-OAuth2-gem
-  BARONG_CLIENT_ID:           ~
-  BARONG_CLIENT_SECRET:       ~
-  BARONG_DOMAIN:              ~
-  BARONG_OAUTH2_REDIRECT_URL: ~ # Specify URL address to which user will be redirected after successful sign in.
+  BARONG_CLIENT_ID:           73632f7a321142b31988b374768212a7e5d4ce732760eafc0675ae2ea8b798cf
+  BARONG_CLIENT_SECRET:       8ffae9b0460f57e48d1a9efc8cbe8896b630a91610872c5fc7d8f682034a58a1
+  BARONG_DOMAIN:              http://freedomex.io:3030
+  BARONG_OAUTH2_REDIRECT_URL: http://freedomex.io/auth/barong/callback
 
   # Configuration variables for API CORS.
   #
@@ -85,8 +85,8 @@ defaults: &defaults
   #   The default URL is /webhooks/btc/hook.
 
   # Customize page metadata like title, description & keywords for landing, cabinet & admin modules.
-  METADATA_TITLE:       Peatio Exchange
-  METADATA_DESCRIPTION: The Opensource Cryptocurrency Exchange
+  METADATA_TITLE:       FreedomEx Exchange
+  METADATA_DESCRIPTION: Trade simply
   METADATA_KEYWORDS:    Peatio,Opensource,Exchange,Cryptocurrency
 
   # Customize bank details which is shown at fiat deposit page. You are free to supply HTML here.
@@ -165,15 +165,15 @@ defaults: &defaults
   DISPLAY_CURRENCY: usd
 
   # Configuration variables for dynamic Barong levels (1.8+).
-  MINIMUM_MEMBER_LEVEL_FOR_DEPOSIT:  '3'
-  MINIMUM_MEMBER_LEVEL_FOR_WITHDRAW: '3'
-  MINIMUM_MEMBER_LEVEL_FOR_TRADING:  '3'
+  MINIMUM_MEMBER_LEVEL_FOR_DEPOSIT:  '0'
+  MINIMUM_MEMBER_LEVEL_FOR_WITHDRAW: '0'
+  MINIMUM_MEMBER_LEVEL_FOR_TRADING:  '0'
 
 development:
   <<: *defaults
 
   # Development OAuth2 provider.
-  OAUTH2_SIGN_IN_PROVIDER:    google
+  OAUTH2_SIGN_IN_PROVIDER:    barong
 
   # Development configuration variables for sign in with Google.
   GOOGLE_CLIENT_ID:           1044454023387-emhp5vmfnp5cf1n9juk09g8gcckrova7.apps.googleusercontent.com

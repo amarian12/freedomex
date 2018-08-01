@@ -221,6 +221,41 @@
     wallet_url_template:      https://etherscan.io/address/#{address}
     transaction_url_template: https://etherscan.io/tx/#{txid}
 
+- id:                   steem
+  symbol:               '$'
+  type:                 coin
+  precision:            8
+  base_factor:          1_000_000_000_000_000_000
+  enabled:              true
+  quick_withdraw_limit: 2
+  deposit_fee:          0
+  withdraw_fee:         0
+  options:
+    #
+    # Generic configuration variables.
+    case_sensitive:            false # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     1 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    1
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
+    #
+    # API client configuration.
+    api_client: STEEM
+    #
+    # Ethereum node specific configuration.
+    json_rpc_endpoint: http://freedom-exchange:Ric_exchange-password123@35.227.90.229:8092
+    #
+    # BitGo specific configuration.
+    bitgo_test_net:              on
+    bitgo_wallet_id:             ~
+    bitgo_wallet_address:        ~
+    bitgo_wallet_passphrase:     ~
+    bitgo_rest_api_root:         https://test.bitgo.com/api/v2
+    bitgo_rest_api_access_token: ~
+    #
+    # Block explorer configuration.
+    wallet_url_template:      https://steemblockexplorer.com/@freedom-exchange
+    transaction_url_template: https://steemblockexplorer.com/tx/#{txid}
+
 - id:                   trst
   symbol:               'Ξ'
   type:                 coin

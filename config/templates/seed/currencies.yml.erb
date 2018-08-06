@@ -1,4 +1,4 @@
-<% if ENV['CURRENCIES_CONFIG'] %>
+›<% if ENV['CURRENCIES_CONFIG'] %>
 <%= File.read(ENV['CURRENCIES_CONFIG']) %>
 <% else %>
 - id:                   usd
@@ -283,4 +283,43 @@
     # Block explorer configuration.
     wallet_url_template:      https://etherscan.io/address/#{address}
     transaction_url_template: https://etherscan.io/tx/#{txid}
+
+- id:                   usdt
+  symbol:               '$'
+  type:                 coin
+  precision:            2
+  base_factor:          1
+  enabled:              true
+  quick_withdraw_limit: 3000
+  deposit_fee:          0         # Set deposit_fee and withdraw_fee as per your configuration
+  withdraw_fee:         0
+  options:
+    #
+    # Generic configuration variables.
+    case_sensitive:            false # IMPORTANT: Be sure to set the correct value!
+    deposit_confirmations:     2 # Set to zero to stop processing all incoming deposits.
+    withdraw_confirmations:    2
+    supports_cash_addr_format: false # Set to «true» for Bitcoin Cash or any other currency which supports CashAddr format.
+    #
+    # API client configuration.
+    api_client: USDT
+    #
+    # Tether node specific configuration.
+    json_rpc_endpoint: http://blockverse:password@35.237.45.86:8332
+    #
+    # BitGo specific configuration.
+    bitgo_test_net:              on
+    bitgo_wallet_id:             ~
+    bitgo_wallet_address:        ~
+    bitgo_wallet_passphrase:     ~
+    bitgo_rest_api_root:         https://test.bitgo.com/api/v2
+    bitgo_rest_api_access_token: ~
+    #
+    # Omnilayer token configuration.
+    property_id:              31
+    hot_wallet_address:       hot_wallet_address # Use address of usdt wallet from which you want to do withdrawals
+    #
+    # Block explorer configuration.
+    wallet_url_template:      https://omniexplorer.info/address/#{address}
+    transaction_url_template: https://omniexplorer.info/tx/#{tx}
 <% end %>

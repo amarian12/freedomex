@@ -1,0 +1,24 @@
+#= require clipboard
+#= require_tree ./models
+#= require_tree ./filters
+#= require_self
+#= require_tree ./config
+#= require_tree ./services
+#= require_tree ./directives
+#= require_tree ./controllers
+#= require ./router
+#= require ./events
+
+$ ->
+  window.pusher_subscriber = new PusherSubscriber()
+
+Member.initData         [gon.user]
+Deposit.initData         gon.deposits
+Account.initData         gon.accounts
+Currency.initData        gon.currencies
+Withdraw.initData        gon.withdraws
+Market.initData          gon.markets
+MarketTicker.initData    gon.tickers
+
+window.app = app = angular.module 'dashboard', ["ui.router", "ngResource", "translateFilters", "textFilters", "precisionFilters", 'htmlFilters']
+

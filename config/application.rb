@@ -62,5 +62,10 @@ module Peatio
 
     # Explicitly require "lib/peatio.rb".
     require_dependency 'peatio'
+
+    config.middleware.insert(0, Rack::ReverseProxy) do
+     reverse_proxy_options preserve_host: true
+     reverse_proxy '/trading/*', 'http://localhost:5000'
+   end
   end
 end

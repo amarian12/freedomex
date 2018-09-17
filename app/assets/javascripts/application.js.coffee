@@ -14,6 +14,15 @@
 #= require ./lib/pusher_connection
 #= require ./lib/tiny-pubsub
 
+#= require pusher.min
+#= require angular
+#= require angular-resource
+#= require ./lib/angular-ui-router
+#= require ./lib/peatio_model
+#= require ./lib/ajax
+#= require ./lib/pusher_subscriber
+#= require ./dashboard/dashboard
+
 $ ->
   BigNumber.config(ERRORS: false)
 

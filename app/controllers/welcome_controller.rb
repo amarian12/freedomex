@@ -7,4 +7,9 @@ class WelcomeController < ApplicationController
 
   def index
   end
+
+  def landing
+    @currencies_summary = Currency.all.map(&:summary)
+    @register_count = Member.count
+  end
 end

@@ -7,7 +7,8 @@
     <%= render 'shared/sentry' %>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%#= stylesheet_link_tag 'application', media: 'all' %>
+    <%= stylesheet_link_tag 'landing', media: 'all' %>
     <%= custom_stylesheet_link_tag_for :main %>
 
     <%= include_gon %>
@@ -15,11 +16,71 @@
     <%= javascript_include_tag 'application' %>
   </head>
 
-  <body id="<%= body_id %>" data-lang="<%= locale_name %>">
-    <div id="wrap">
-      <%= yield %>
-      <div id="push"></div>
-    </div>
+   <body id="<%= body_id %>" data-lang="<%= locale_name %>">
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-dark bg-dark py-3" id="navbar_main">
+          <div class="container">
+              <a class="navbar-brand mr-lg-5" href="../index.html"><strong>Network status</strong><span class="green-dot"><img src="assets/serverstatus-green.png"></span>Network status</a>
+
+              <div class="collapse navbar-collapse" id="navbar_main_collapse">
+                  <!-- <ul class="navbar-nav align-items-lg-center">
+                      <li class="nav-item ">
+                          <a class="nav-link" href="../index.html">Overview</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                          <div class="dropdown-menu dropdown-menu-lg py-0">
+                              <div class="list-group list-group-flush">
+                                  <a href="../pages/pages-landing.html" class="list-group-item list-group-item-action">
+                                      <div class="media d-flex align-items-center">
+                                          <img src="../assets/img/icons/dusk/svg/browser-window.svg" class="img-saturate" style="width: 60px;">
+                                          <div class="media-body ml-3">
+                                              <h2 class="heading h6 mb-1">Landing Pages</h2>
+                                              <p class="mb-0">A great point to start from.</p>
+                                          </div>
+                                      </div>
+                                  </a>
+                                  <a href="../pages/pages-secondary.html" class="list-group-item list-group-item-action">
+                                      <div class="media d-flex align-items-center">
+                                          <img src="../assets/img/icons/dusk/svg/details-popup.svg" class="img-saturate" style="width: 60px;">
+                                          <div class="media-body ml-3">
+                                              <h2 class="heading h6 mb-1">Secondary Pages</h2>
+                                              <p class="mb-0">Build your website with these demos.</p>
+                                          </div>
+                                      </div>
+                                  </a>
+                                  <a href="../pages/pages-account.html" class="list-group-item list-group-item-action">
+                                      <div class="media d-flex align-items-center">
+                                          <img src="../assets/img/icons/dusk/svg/form.svg" class="img-saturate" style="width: 60px;">
+                                          <div class="media-body ml-3">
+                                              <h2 class="heading h6 mb-1">Account Pages</h2>
+                                              <p class="mb-0">User account management made easy.</p>
+                                          </div>
+                                      </div>
+                                  </a>
+                              </div>
+                          </div>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="../docs/alerts.html" role="button">Components</a>
+                      </li>
+                  </ul> -->
+                  <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+                    <li class="nav-item">
+                        <a id="server-time" class="nav-link" href="#"></a>
+                    </li>
+                  </ul>
+              </div>
+          </div>
+      </nav>
+    </header>
+    <%= yield %>
+    <div id="push"></div>
     <%= render 'shared/footer' %>
   </body>
 </html>
+
+<script type="text/javascript">
+  var d = new Date();
+  document.getElementById('server-time').innerHTML = "Server Time: "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
+</script>

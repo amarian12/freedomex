@@ -1,0 +1,35 @@
+<main ng-app="dashboard">
+  <!-- Spotlight -->
+  <section class="slice slice-lg bg-cover bg-size--cover" data-separator="rounded-continuous" data-separator-bg="secondary">
+    <div class="container">
+      <div class="row row-grid justify-content-around align-items-center">
+        <div class="col-lg-6">
+          <div class="pt-lg-md text-center">
+            <div><img src="/assets/freedomex-logo.gif" width="200"></div>
+            <center><img src="/assets/freedom.png"></center>
+            <% unless current_user %>
+              <% provider = ENV['OAUTH2_SIGN_IN_PROVIDER'] %>
+              <% unless provider.blank? %>
+                <div class="mt-5">
+                  <center><img src="/assets/login-button-dot.png"></center>
+                  <a class="login-btn-2 btn-translate--hover" href="/auth/<%= provider == 'google' ? 'google_oauth2' : provider %>" role="button">
+                    <img src="/assets/login-button.png">
+                  <%#= t("header.sign_in_with_#{provider}") %>
+                  </a>
+                </div>
+              <% end %>
+            <% else %>
+            <div class="mt-5">
+              <a class="btn btn-danger btn-circle btn-translate--hover mr-4" href="<%= settings_path %>" role="button">
+              <small><%= t('header.settings') %></small>
+              </a>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+  <dashboard></dashboard>
+</main>

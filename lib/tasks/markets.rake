@@ -7,7 +7,12 @@ namespace :markets do
     Market.transaction do
       YAML.load_file(Rails.root.join('config/seed/markets.yml')).each do |hash|
         next if Market.exists?(id: hash.fetch('id'))
-        Market.create!(hash)
+        puts hash
+        begin
+          Market.create!(hash)
+        rescue => e
+          debugger
+        end
       end
     end
   end

@@ -1,0 +1,50 @@
+.login-btn {
+    background-color: #050899;
+    color: #fff;
+    font-size: 24px;
+    border-radius: 15px;
+}
+.login-btn:hover {
+    background-color: #050899;
+    color: #fff;
+    font-size: 24px;
+    border-radius: 15px;
+}
+.logout-btn {
+    background-color: #e30613;
+    color: #fff;
+    font-size: 24px;
+    border-radius: 15px;
+}
+.login-out:hover {
+    background-color: #e30613;
+    color: #fff;
+    font-size: 24px;
+    border-radius: 15px;
+}
+.table-data {
+    padding: 5px;
+    background: url(../assets/vertical-grey-line-fade-to-white.png), url(../assets/vertical-grey-line-fade-to-white.png), url(../assets/horizontal-grey-line-fade-to-white.png),url(../assets/horizontal-grey-line-fade-to-white.png);
+    background-position: left,right,bottom,top;
+    background-repeat: no-repeat;
+}
+.green-dot {
+    display: inline-block;
+    padding: 0 4px;
+}
+.heading {
+    background: url(../assets/horizontal-grey-line-fade-to-white.png);
+    display: inline-block;
+    background-size: 100%;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    padding-bottom: 10px;
+}
+.login-btn-2{
+    color: #f42437;
+    font-size: 28px;
+}
+.login-dot{
+    background-color: #050899;
+    display: inline-block;
+}

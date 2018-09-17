@@ -20,7 +20,9 @@ end
 
 Peatio::Application.routes.draw do
 
-  root 'welcome#index'
+  #root 'welcome#index'
+  root 'welcome#landing'
+
   get '/signout' => 'sessions#destroy', :as => :signout
   get '/auth/failure' => 'sessions#failure', :as => :failure
   match '/auth/:provider/callback' => 'sessions#create', via: %i[get post]

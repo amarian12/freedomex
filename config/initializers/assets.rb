@@ -12,6 +12,7 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 Rails.application.config.assets.precompile.concat \
   %w[
+    landing.scss
     admin.css
     market.css
     admin.js

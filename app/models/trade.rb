@@ -65,7 +65,7 @@ class Trade < ActiveRecord::Base
 end
 
 # == Schema Information
-# Schema version: 20180524170927
+# Schema version: 20180606174614
 #
 # Table name: trades
 #

@@ -107,7 +107,7 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180605104154
+# Schema version: 20180606174614
 #
 # Table name: markets
 #

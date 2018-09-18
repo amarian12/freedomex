@@ -20,9 +20,9 @@
               <% end %>
             <% else %>
             <div class="mt-5">
-              <a class="btn btn-danger btn-circle btn-translate--hover mr-4" href="<%= settings_path %>" role="button">
-              <small><%= t('header.settings') %></small>
-              </a>
+              <a  class="login-btn-2" href="<%= settings_path %>" role="button">
+                <i class="fa fa-user profile-icon"></i>
+              <%#= t('header.settings') %><%=current_user.email%></a>
             </div>
             <% end %>
           </div>

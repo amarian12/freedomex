@@ -22,6 +22,7 @@
 #= require ./lib/ajax
 #= require ./lib/pusher_subscriber
 #= require ./dashboard/dashboard
+#= require jquery.flexisel
 
 $ ->
   BigNumber.config(ERRORS: false)

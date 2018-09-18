@@ -1,0 +1,23 @@
+<% controllers = ['settings', 'dashboard'] %>
+<% dropdown_class = (controllers & controller_path.split('/')).empty? ? '' : 'active' %>
+<li class="nav-item dropdown account-settings text-left <%= dropdown_class %>">
+  <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+    <span class="user-icon"><img src="/assets/default-profile.png" ></span>
+    <span><%= current_user.email %></span>
+  </a>
+  <a class="nav-link" href="<%= main_app.signout_path %>">
+    <span class="log-out-btn"><%#= t('header.signout') %>Logout</span>
+  </a>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="<%= settings_path %>">
+      <i class="fa fa-user"></i><span><%= t('header.my_profile') %></span>
+    </a>
+    <% if is_admin? %>
+      <a class="dropdown-item" href="<%= admin_dashboard_path %>">
+        <i class="fa fa-dashboard"></i>
+        <span><%= t('header.admin') %></span>
+      </a>
+    <% end %>
+
+  </div>
+</li>

@@ -1,0 +1,92 @@
+<header class="main-nav-header">
+  <nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4">
+          <span class="logo-box">
+            <a class="text-center" href="<%= root_path %>">
+              <img class="nav-img" src="<%= ENV['LOGO_URL'] || image_path('navigationbar-logo-alt.png') %>">
+            </a>
+          </span>
+          <div class="network-box">
+            <div>
+              Network
+              <span class="green-dot pull-right"><img src="assets/serverstatus-green.png"></span>
+            </div>
+            <span>15:0:47</span><span>GMT+5</span>
+          </div>
+        </div>
+        <div class="col-5 no-padding">
+          <ul id="value-slider">
+            <li>
+              <div class="currency-name">
+                BTC/LCT
+              </div>
+              <div class="value-box">
+                <p>Last Price</p>
+                <span class="red">0.00913</span>
+              </div>
+              <div class="value-box">
+                <p>
+                  24H CHANGE
+                </p>
+                <span class="red">-11.04%</span>
+              </div>
+              <div class="value-box">
+                <p>
+                  24H High
+                </p>
+                <span class="grey">0.00975</span>
+
+              </div>
+              <div class="value-box">
+                <p>
+                  24H Low
+                </p>
+                <span class="grey">0.00897</span>
+              </div>
+              <div class="value-box">
+                <p>
+                  24H Volume
+                </p>
+                <span class="red">119.42</span>
+              </div>
+
+          </ul>
+          <div class="collapse navbar-collapse" id="top-navbar">
+            <!-- <ul id="menu" class="navbar-nav mr-auto">
+              <%#= top_nav_link(t('header.market'), trading_path(current_market.id), 'exchange', target: '_blank') if current_user %>
+              <%#= top_nav_link(t('header.funds'), funds_path, 'money', controllers: ['funds']) if current_user %>
+              <%#= top_nav_link(t('header.assets'), exchange_assets_path, 'bar-chart-o') if current_user %>
+              <%#= top_nav_link(t('header.history'), order_history_path, 'book', controllers: ['history']) if current_user %>
+            </ul> -->
+          </div>
+        </div>
+        <div class="col-3">
+          <ul class="right-nav nav-menu-right">
+          <%#= render partial: 'shared/header_profile_setting' if current_user %>
+          <%#= render partial: 'shared/header_lang_sel' %>
+          <%= render partial: 'shared/new_header_profile_setting' if current_user %>
+          <%= render partial: 'shared/new_profile_lang' %>
+        </ul>
+        </div>
+      </div>
+
+
+
+    </div>
+  </nav>
+</header>
+<script type="text/javascript">
+$(window).load(function() {
+    $("#value-slider").flexisel({
+        visibleItems: 1,
+        itemsToScroll: 1,
+        autoPlay: {
+            enable: true,
+            interval: 10000,
+            pauseOnHover: true
+        }
+    });
+});
+</script>

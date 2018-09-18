@@ -1,0 +1,12 @@
+<li class="nav-item dropdown languages-icon">
+  <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+    <img src="/assets/<%= I18n.locale %>.png"/>
+  </a>
+  <div id="languages" class="dropdown-menu">
+    <% I18n.available_locales.each do |lang| %>
+      <a class="dropdown-item" href="?lang=<%= lang %>">
+        <img src="/assets/<%= lang || I18n.locale %>.png"/>
+      </a>
+    <% end %>
+  </div>
+</li>

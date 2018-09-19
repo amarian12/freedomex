@@ -22,7 +22,8 @@
       <%- if content_for?(:header) %>
         <%= yield(:header) %>
       <%- else %>
-        <%= render 'shared/header' %>
+        <%#= render 'shared/header' %>
+        <%= render 'shared/new_header' %>
       <%- end %>
 
       <div class='container'>

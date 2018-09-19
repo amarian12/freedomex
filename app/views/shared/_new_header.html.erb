@@ -13,7 +13,7 @@
               Network
               <span class="green-dot pull-right"><img src="assets/serverstatus-green.png"></span>
             </div>
-            <span>15:0:47</span><span>GMT+5</span>
+            <span id="server-time"></span>
           </div>
         </div>
         <div class="col-5 no-padding">
@@ -89,4 +89,10 @@ $(window).load(function() {
         }
     });
 });
+
+ var d = new Date();
+  document.getElementById('server-time').innerHTML = "Server Time: "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
 </script>
+
+
+

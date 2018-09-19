@@ -27,7 +27,7 @@
                 <td>{{ market.name }}</td>
                 <td>{{ market.ask_unit | uppercase }}</td>
                 <td>{{ dashboardCtrl.getMarketTicker(market.name).volume }}</td>
-                <td>{{ dashboardCtrl.getChangeValue(market.name)}}</td>
+                <td class="{{ dashboardCtrl.getChangeValue(market.name) >= '0' ? 'increase-value' : 'decrease-value' }}">{{ dashboardCtrl.getChangeValue(market.name)}}<span><i class="fa fa-long-arrow-up"></i><i class="fa fa-long-arrow-down"></i></span></td>
                 <td>{{ dashboardCtrl.getMarketTicker(market.name).last }}</td>
                 <td>{{ dashboardCtrl.getMarketTicker(market.name).high }}</td>
                 <td>{{ dashboardCtrl.getMarketTicker(market.name).low }}</td>

@@ -61,4 +61,22 @@
     border-radius: 100%;
 
 }
+.decrease-value{
+  color: red;
+}
 
+.increase-value{
+  color: green
+}
+.increase-value span, .decrease-value span{
+  padding: 0 5px;
+}
+.increase-value .fa-long-arrow-down{
+  display: none;
+}
+.decrease-value .fa-long-arrow-up{
+  display: none;
+}
+.setting-dropdown{
+  margin-top: -4px;
+}

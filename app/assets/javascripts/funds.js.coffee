@@ -23,6 +23,7 @@
 #= require bignumber
 #= require underscore
 #= require qrcode
+#= require jquery.flexisel
 
 $(document).on 'click', '[data-clipboard-text], [data-clipboard-target]', (e) ->
   $action = $(this)

@@ -8,10 +8,24 @@
   <a class="nav-link" href="<%= main_app.signout_path %>">
     <span class="log-out-btn"><%#= t('header.signout') %>Logout</span>
   </a>
-  <div class="dropdown-menu">
+  <div class="dropdown-menu setting-dropdown">
     <a class="dropdown-item" href="<%= settings_path %>">
       <i class="fa fa-user"></i><span><%= t('header.my_profile') %></span>
     </a>
+    <% if current_user%>
+      <a class="dropdown-item" href="<%= trading_path(current_market.id) %>">
+        <i class="fa fa-exchange"></i><span><%= t('header.market') %></span>
+      </a>
+      <a class="dropdown-item" href="<%= funds_path %>">
+        <i class="fa fa-money"></i><span><%= t('header.funds') %></span>
+      </a>
+      <a class="dropdown-item" href="<%= exchange_assets_path %>">
+        <i class="fa fa-bar-chart-o"></i><span><%= t('header.assets') %></span>
+      </a>
+      <a class="dropdown-item" href="<%= order_history_path%>">
+        <i class="fa fa-book"></i><span><%= t('header.history') %></span>
+      </a>
+    <%end%>
     <% if is_admin? %>
       <a class="dropdown-item" href="<%= admin_dashboard_path %>">
         <i class="fa fa-dashboard"></i>

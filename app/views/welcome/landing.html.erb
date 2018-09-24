@@ -12,10 +12,12 @@
               <% unless provider.blank? %>
                 <div class="mt-5">
                   <center><img src="/assets/login-button-dot.png"></center>
-                  <a class="login-btn-2 btn-translate--hover" href="/auth/<%= provider == 'google' ? 'google_oauth2' : provider %>" role="button">
-                    <img src="/assets/login-button.png">
-                  <%#= t("header.sign_in_with_#{provider}") %>
-                  </a>
+                  <a class="signin-btn" href="/auth/<%= provider == 'google' ? 'google_oauth2' : provider %>" role="button">
+                    Login
+                    <%#= t("header.sign_in_with_#{provider}") %>
+                  </a></br></br>
+                  <%= link_to "Signup",ENV.fetch('BARONG_DOMAIN')+ ENV.fetch('BARONG_SIGNUP_PATH'), :class=> "signin-btn signup"%>
+
                 </div>
               <% end %>
             <% else %>

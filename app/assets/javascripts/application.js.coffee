@@ -23,6 +23,7 @@
 #= require ./lib/pusher_subscriber
 #= require ./dashboard/dashboard
 #= require jquery.flexisel
+#= require ./header_coffee
 
 $ ->
   BigNumber.config(ERRORS: false)
@@ -51,3 +52,12 @@ $ ->
       text:   $el.data('text')
       width:  $el.data('width')
       height: $el.data('height')
+
+$ ->
+  window.pusher_subscriber = new PusherSubscriber()
+  global_channel = window.pusher.subscribe("market-global")
+  global_channel.bind 'tickers', (data) =>
+    gon.tickers = data
+    MarketTicker.updateData(gon.tickers)
+    HeaderCoffee.setHeaderValues()
+

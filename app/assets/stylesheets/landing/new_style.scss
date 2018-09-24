@@ -80,3 +80,23 @@
 .setting-dropdown{
   margin-top: -4px;
 }
+
+.signin-btn{
+  background: #00349B;
+  color: #fff;
+  border-radius: 13px;
+  height: 40px;
+  display: inline-block;
+  line-height: 40px;
+  font-weight: bold;
+  width: 100px;
+  font-size: 20px;
+}
+.signin-btn:hover{
+  color: #fff;
+  text-decoration: none;
+}
+.signup.signin-btn{
+  margin: 0 5px;
+  background: #F4263D;
+}

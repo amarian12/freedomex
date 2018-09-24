@@ -22,5 +22,10 @@ class MarketTicker extends PeatioModel.Model
       $.each records, (idx, record) ->
         MarketTicker.create(record)
 
+  @updateData: (records) ->
+    PeatioModel.Ajax.disable ->
+      $.each records, (idx, record) ->
+        MarketTicker.findBy('name', record.name).updateAttributes(record)
+
 window.MarketTicker = MarketTicker
 

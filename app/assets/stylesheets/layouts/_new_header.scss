@@ -54,15 +54,19 @@
   padding-top: 14px;
   color: #123099;
   display: inline-block;
-  min-width: 83px;
+  min-width: 90px;
 }
 .value-box{
   display: inline-block;
   font-size: 18px;
   font-weight: bold;
   color: #333;
-   min-width: 83px;
+   min-width: 75px;
+   vertical-align: text-top;
 }
+.value-box .fa{
+    font-size: 12px;
+  }
 .value-box p{
   font-size: 12px;
   text-transform: uppercase;
@@ -204,4 +208,17 @@
   font-size: 12px;
   font-weight: bold;
   border-radius: 5px;
+}
+
+.increase-value{
+  color: green
+}
+.increase-value span, .decrease-value span{
+  padding: 0 5px;
+}
+.increase-value .fa-long-arrow-down{
+  display: none;
+}
+.decrease-value .fa-long-arrow-up{
+  display: none;
 }

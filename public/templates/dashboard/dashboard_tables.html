@@ -1,87 +1,18 @@
-<section class="bg-secondary" bind="dashboard">
+<section class="bg-secondary" bind="marketTicker">
   <div class="container">
     <div class="col-lg-12 center">
       <div class="mb-md text-center">
         <h3 class="heading h3">MARKETS OVERVIEW</h3>
       </div>
-      <div class="table-list" ng-repeat="currency in dashboardCtrl.currencies()" ng-if="dashboardCtrl.ifMarketsPresent(currency.code)">
+      <div class="table-list" ng-repeat="currency in currencies" ng-if="dashboardCtrl.ifMarketsPresent(currency.code)">
+        <p style="display: none">{{dashboardCtrl.changeCurrency(currency.code)}}</p>
         <center>
           <h4>{{ (currency.code | uppercase) + ' MARKETS' }}</h4>
         </center>
         <div class="table-data">
-          <table class="table table-striped text-center" id="dev-table">
-            <thead>
-              <tr>
-                <th>MARKET</th>
-                <th>CURRENCY</th>
-                <th>VOLUME</th>
-                <th>%CHANGE</th>
-                <th>LAST PRICE</th>
-                <th>24HR HIGH</th>
-                <th>24HR LOW</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- <tr ng-repeat="market in dashboardCtrl.getMarkets(currency.code)"> -->
-              <tr ng-repeat="market in dashboardCtrl.getMarkets(currency.code)">
-                <td>{{ market.name }}</td>
-                <td>{{ market.ask_unit | uppercase }}</td>
-                <td>{{ dashboardCtrl.getMarketTicker(market.name).volume }}</td>
-                <td class="{{ dashboardCtrl.getChangeValue(market.name) >= '0' ? 'increase-value' : 'decrease-value' }}">{{ dashboardCtrl.getChangeValue(market.name)}}<span><i class="fa fa-long-arrow-up"></i><i class="fa fa-long-arrow-down"></i></span></td>
-                <td>{{ dashboardCtrl.getMarketTicker(market.name).last }}</td>
-                <td>{{ dashboardCtrl.getMarketTicker(market.name).high }}</td>
-                <td>{{ dashboardCtrl.getMarketTicker(market.name).low }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <ng-include src="'/templates/dashboard/market_tds.html'"></ng-include>
         </div>
       </div>
-      {{ console.clear()  }}
-      <!-- <div class="table-list">
-        <center>
-          <h4>SMT MARKETS</h4>
-        </center>
-        <div class="table-data">
-          <table class="table table-striped" id="dev-table">
-            <thead>
-              <tr>
-                <th>MARKET</th>
-                <th>CURRENCY</th>
-                <th>VOLUME</th>
-                <th>%CHANGE</th>
-                <th>LAST PRICE</th>
-                <th>24HR HIGH</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>BTC 0.00</td>
-                <td>currency</td>
-                <td>340.01</td>
-                <td>11.01</td>
-                <td>0.0000012</td>
-                <td>0.0000035</td>
-              </tr>
-              <tr>
-                <td>BTC 0.00</td>
-                <td>currency</td>
-                <td>340.01</td>
-                <td>11.01</td>
-                <td>0.0000012</td>
-                <td>0.0000035</td>
-              </tr>
-              <tr>
-                <td>BTC 0.00</td>
-                <td>currency</td>
-                <td>340.01</td>
-                <td>11.01</td>
-                <td>0.0000012</td>
-                <td>0.0000035</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div> -->
     </div>
   </div>
 </section>

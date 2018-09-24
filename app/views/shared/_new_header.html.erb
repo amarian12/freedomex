@@ -16,43 +16,12 @@
             <span id="server-time"></span>
           </div>
         </div>
-        <div class="col-5 no-padding">
-          <ul id="value-slider">
-            <li>
-              <div class="currency-name">
-                BTC/LCT
-              </div>
-              <div class="value-box">
-                <p>Last Price</p>
-                <span class="red">0.00913</span>
-              </div>
-              <div class="value-box">
-                <p>
-                  24H CHANGE
-                </p>
-                <span class="red">-11.04%</span>
-              </div>
-              <div class="value-box">
-                <p>
-                  24H High
-                </p>
-                <span class="grey">0.00975</span>
-
-              </div>
-              <div class="value-box">
-                <p>
-                  24H Low
-                </p>
-                <span class="grey">0.00897</span>
-              </div>
-              <div class="value-box">
-                <p>
-                  24H Volume
-                </p>
-                <span class="red">119.42</span>
-              </div>
-
-          </ul>
+        <div class="col-5 no-padding" ng-app="dashboard">
+          <section class="bg-secondary">
+            <!-- <ul id="value-slider"> -->
+              <priceheader></priceheader>
+            <!-- </ul> -->
+          </section>
           <div class="collapse navbar-collapse" id="top-navbar">
             <!-- <ul id="menu" class="navbar-nav mr-auto">
               <%#= top_nav_link(t('header.market'), trading_path(current_market.id), 'exchange', target: '_blank') if current_user %>
@@ -78,19 +47,22 @@
   </nav>
 </header>
 <script type="text/javascript">
-$(window).load(function() {
+  $(window).load(function() {
     $("#value-slider").flexisel({
         visibleItems: 1,
         itemsToScroll: 1,
         autoPlay: {
             enable: true,
-            interval: 10000,
+            interval: 2000,
             pauseOnHover: true
         }
     });
-});
+    HeaderCoffee.setHeaderValues()
+  });
 
- var d = new Date();
+
+
+  var d = new Date();
   document.getElementById('server-time').innerHTML = "Server Time: "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
 </script>
 

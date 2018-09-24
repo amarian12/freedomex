@@ -24,7 +24,8 @@ class SessionsController < ApplicationController
   def destroy
     destroy_member_sessions(current_user.id)
     reset_session
-    redirect_to root_path
+    # redirect_to root_path
+    redirect_to "#{ENV.fetch('BARONG_DOMAIN')}#{ENV.fetch('BARONG_SIGNOUT_PATH')}"
   end
 
 private

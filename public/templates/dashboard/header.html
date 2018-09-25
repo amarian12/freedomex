@@ -1,5 +1,5 @@
 <ul id="value-slider">
-  <li ng-repeat="market in markets" bind="marketTicker" ng-if="market.ask_unit=='xrp'" class="market_{{market.ask_unit}}{{market.bid_unit}}">
+  <li ng-repeat="market in markets" bind="marketTicker" class="market_{{market.ask_unit}}{{market.bid_unit}}">
     <div class="currency-name">{{ market.name }}</div>
     <div class="value-box">
       <p>Last Price</p>

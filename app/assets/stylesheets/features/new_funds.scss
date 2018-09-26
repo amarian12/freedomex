@@ -1,0 +1,128 @@
+.navbar-transparent
+  {
+      position: absolute;
+      z-index: 100;
+      top: 0;
+      width: 100%;
+      border: 0;
+      background-color: transparent !important;
+      box-shadow: none;
+  }
+.navbar.bg-dark a, .navbar.bg-dark.navbar a {
+    color: #333 !important;
+}
+ol, ul, dl{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.profile-box{
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.profile-box img{
+  width: 100%;
+  height: 100%;
+}
+.funds-box {
+    background: url(../assets/horizontal-grey-line-fade-to-white.png);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 100% 2px;
+    padding: 10px;
+    text-align: center;
+}
+.funds-box h1 {
+  font-size: 24px;
+  text-transform: uppercase;
+  margin: 0;
+  font-weight: 600;
+}
+.funds-box h4 {
+  font-size: 18px;
+  text-transform: uppercase;
+}
+.funds-box p {
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 0;
+}
+.languages-icon a img {
+    width: 100px !important;
+}
+.setting-box{
+  text-align: center;
+}
+.setting-box p {
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 0;
+  color: #333;
+}
+.setting-box p span{
+  color: #050899;
+}
+.setting-box a:hover{
+  text-decoration: none;
+}
+.table thead th {
+    font-size: 12px;
+}
+
+.down-dot span{
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: #050899;
+  border-radius: 100%;
+  border: 2px solid #fff;
+}
+.down-dot .fa, .up-dot .fa {
+    position: relative;
+    margin-left: -5px;
+}
+.down-dot .fa {
+  color: #050899;
+}
+.up-dot .fa {
+  color: red;
+}
+.up-dot span{
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: red;
+  border-radius: 100%;
+  border: 2px solid #fff;
+}
+.search-header{
+  padding: 10px 0;
+}
+
+.stylish-input-group .input-group-addon{
+    background: white !important;
+}
+.stylish-input-group .form-control{
+  border-right:0;
+  box-shadow:0 0 0;
+  border-color:#ccc;
+}
+.stylish-input-group button{
+    border:0;
+    background:transparent;
+}
+.search-input .input-group-addon {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc !important;
+    border-radius: 0 4px 4px 0 !important;
+    border-left: 0 !important;
+}

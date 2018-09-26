@@ -1,27 +1,163 @@
-<h1 class="page-title"><%= t('header.funds') %></h1>
 
-<div class="card card-default">
+<!-- <h1 class="page-title"><%#= t('header.funds') %></h1> -->
+<section class="bg-cover bg-size--cover" data-separator="rounded-continuous" data-separator-bg="secondary">
+    <div class="container">
+      <div class="row row-grid justify-content-around align-items-center">
+        <div class="col-lg-6">
+          <div class="pt-lg-md text-center">
+            <center><img src="/assets/freedom.png"></center>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <center>
+            <ul>
+              <li class="nav-item dropdown languages-icon">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                  <img src="/assets/<%= I18n.locale %>.png"/>
+                </a>
+                <div id="languages" class="dropdown-menu">
+                  <% I18n.available_locales.each do |lang| %>
+                    <a class="dropdown-item" href="?lang=<%= lang %>">
+                      <img src="/assets/<%= lang || I18n.locale %>.png"/>
+                    </a>
+                  <% end %>
+                </div>
+              </li>
+            </ul>
+          </center>
+        </div>
+        <div class="col-md-6">
+          <div class="user-profile">
+            <div class="profile-box"><img src="/assets/placeholder-male-square.png"></div>
+            <center>
+              <a class="login-btn-2" href="#" role="button">
+              admin@barong.io
+              </a>
+            </center>
+            <div class="funds-box">
+              <h1>My Funds</h1>
+              <h4>Total Value</h4>
+              <p>Crypto: <span>B 17-7102 ($108,507,33)</span></p>
+              <p>Flat: <span>$47011,42</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="setting-box">
+            <a href="#">
+              <img src="/assets/setting-icon.png" width="100">
+              <p>Account Setting</p>
+              <p><span>2fa Authentification</span><span class="green-dot"><img src="assets/serverstatus-green.png"></span></p>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-md-center">
+        <div class="col-md-4">
+          <div class="search-header">
+            <div class="search-input">
+              <div class="input-group stylish-input-group">
+                  <input type="text" class="form-control"  placeholder="Search" >
+                  <span class="input-group-addon">
+                      <button type="submit">
+                          <span class="fa fa-search"></span>
+                      </button>
+                  </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 table-data">
+          <table class="table table-striped text-center">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th nowrap="nowrap">CURRENCY NAME</th>
+                <th>MARKET</th>
+                <th nowrap="nowrap">AVAILABLE BALANCE</th>
+                <th nowrap="nowrap">PENDING DEPOSIT</th>
+                <th>RESERVED</th>
+                <th>TOTAL</th>
+                <th nowrap="nowrap">EST. BTC VALUE</th>
+                <th>%CHANGE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="down-dot">
+                    <span></span>
+                    <i class="fa fa-long-arrow-down"></i>
+                  </span>
+                </td>
+                <td>
+                  <span class="up-dot">
+                    <span></span>
+                    <i class="fa fa-long-arrow-up"></i>
+                  </span>
+                </td>
+                <td>Bitcoin</td>
+                <td>BTC</td>
+                <td>4048.304581</td>
+                <td>0.0000000</td>
+                <td>0.0000000</td>
+                <td>4048.304581</td>
+                <td>2.85525425</td>
+                <td>-0.4</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="down-dot">
+                    <span></span>
+                    <i class="fa fa-long-arrow-down"></i>
+                  </span>
+                </td>
+                <td>
+                  <span class="up-dot">
+                    <span></span>
+                    <i class="fa fa-long-arrow-up"></i>
+                  </span>
+                </td>
+                <td>Litecoin</td>
+                <td>LTC </td>
+                <td>4048.304581</td>
+                <td>0.0000000</td>
+                <td>0.0000000</td>
+                <td>4048.304581</td>
+                <td>2.85525425</td>
+                <td>-0.4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- <div class="card card-default">
   <div class="card-currencies">
 
     <div class="row">
       <div class="col-4 pr-0">
 
         <div class="currencies-container">
-          <accounts></accounts>
-        </div>
-      </div>
+          <!-- <accounts></accounts> -->
+        <!-- </div>
+      </div> -->
 
-      <div class="col-8 border-left">
+     <!--  <div class="col-8 border-left">
         <div class="card-body">
           <!-- {{template 'flash'}} -->
-          <ui-view></ui-view>
-        </div>
+          <!-- <ui-view></ui-view> -->
+        <!-- </div>
       </div>
-
-    </div><!-- .row -->
+ -->
+    <!-- </div>.row
 
   </div>
-</div>
+</div> -->
 
 <% content_for :scripts do %>
   <script type="text/javascript" charset="utf-8">

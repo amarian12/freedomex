@@ -66,7 +66,7 @@ body {
   line-height: 1.5;
   color: #212529;
   text-align: left;
-  background-color: #eeeeee; }
+  background-color: #fff; }
 
 [tabindex="-1"]:focus {
   outline: 0 !important; }
@@ -1376,7 +1376,7 @@ pre {
     border-bottom-width: 2px; }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05); }
+  background-color: #eaedf0 }
 
 .table-hover tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.075); }
@@ -4802,8 +4802,7 @@ button.bg-light:hover,
 button.bg-light:focus {
   background-color: #dae0e5 !important; }
 
-.bg-dark {
-  background-color: #343a40 !important; }
+
 
 a.bg-dark:hover, a.bg-dark:focus,
 button.bg-dark:hover,
@@ -6961,7 +6960,7 @@ a.text-dark:hover, a.text-dark:focus {
 ******************************************/
 .main-font, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .lead, .navbar-brand, .card .title, .title-description, label,
 .control-label, .item-list .item-title, .table.table-boxed thead tr th, .main-logo, .header .header-block-nav .notifications.new .counter, .header .header-block-nav .profile .name {
-  font-family: "Josefin Sans", helvetica, arial, sans-serif;
+
   font-weight: 500; }
 
 .text-font, section.section-block p {
@@ -7790,8 +7789,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .lead, .navbar-brand {
     font-weight: 200;
     color: #939393; }
 
-p, ul, li, div, a {
-  font-family: "Muli"; }
 
 pre {
   color: #444; }
@@ -14668,7 +14665,6 @@ strong, b, .bold {
     border-color: #fafafa; }
 
 .bg-dark {
-  background-color: #2c2f33 !important;
   color: #ffffff; }
   .bg-dark a {
     color: #ffffff; }

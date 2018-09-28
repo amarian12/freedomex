@@ -9,6 +9,9 @@ class Account extends PeatioModel.Model
   deposits: ->
     Deposit.findAllBy('currency', @currency)
 
+  currency_name: ->
+    Currency.findBy('code', @currency).full_name
+
   withdraws: ->
     Withdraw.findAllBy('account_id', @id)
 

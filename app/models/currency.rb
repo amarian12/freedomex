@@ -102,7 +102,8 @@ class Currency < ActiveRecord::Base
     { code:                     code,
       coin:                     coin?,
       fiat:                     fiat?,
-      transaction_url_template: transaction_url_template }
+      transaction_url_template: transaction_url_template,
+      full_name: full_name }
   end
 
   def summary
@@ -164,7 +165,7 @@ class Currency < ActiveRecord::Base
     options['withdraw_confirmations'].to_i
   end
 
-  def withdraw_confirmations=(n) 
+  def withdraw_confirmations=(n)
     options['withdraw_confirmations'] = n.to_i
   end
 
@@ -192,7 +193,7 @@ class Currency < ActiveRecord::Base
 end
 
 # == Schema Information
-# Schema version: 20180605104154
+# Schema version: 20180927112420
 #
 # Table name: currencies
 #
@@ -208,6 +209,7 @@ end
 #  precision            :integer          default(8), not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  full_name            :string(255)
 #
 # Indexes
 #

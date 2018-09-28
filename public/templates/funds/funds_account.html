@@ -1,0 +1,40 @@
+<table class="table table-striped text-center">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th nowrap="nowrap">CURRENCY NAME</th>
+      <th>MARKET</th>
+      <th nowrap="nowrap">AVAILABLE BALANCE</th>
+      <th nowrap="nowrap">PENDING DEPOSIT</th>
+      <th>RESERVED</th>
+      <th>TOTAL</th>
+      <th nowrap="nowrap">EST. BTC VALUE</th>
+      <!-- <th>%CHANGE</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="account in accounts" bind="accounts">
+      <td>
+        <span class="down-dot">
+          <span></span>
+          <i class="fa fa-long-arrow-down"></i>
+        </span>
+      </td>
+      <td>
+        <span class="up-dot">
+          <span></span>
+          <i class="fa fa-long-arrow-up"></i>
+        </span>
+      </td>
+      <td>{{ accountsCtrl.currencyName(account)}}</td>
+      <td><a href="http://localhost:5000/trading/{{account.currency}}usd">{{ account.currency | uppercase }}</a>
+      <td>{{account.balance | round_down }}</td>
+      <td>{{account.locked}}</td>
+      <td>0.00</td>
+      <td>{{ accountsCtrl.totalValue(account)}}</td>
+      <td>2.8552</td>
+      <!-- <td>-0.4</td> -->
+    </tr>
+  </tbody>
+</table>

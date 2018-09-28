@@ -44,3 +44,4 @@ $(document).on 'click', '[data-clipboard-text], [data-clipboard-target]', (e) ->
   $action.click()
 
 setTimeout -> BigNumber.config(ERRORS: false)
+

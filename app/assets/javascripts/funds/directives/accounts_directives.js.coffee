@@ -1,7 +1,8 @@
 app.directive 'accounts', ->
   return {
     restrict: 'E'
-    templateUrl: '/templates/funds/accounts.html'
+    #templateUrl: '/templates/funds/accounts.html'
+    templateUrl: '/templates/funds/funds_account.html'
     scope: { localValue: '=accounts' }
     controller: ($scope, $state) ->
       ctrl = @
@@ -10,6 +11,12 @@ app.directive 'accounts', ->
         @state.transitionTo("deposits.currency", {currency: Account.first().currency})
 
       $scope.accounts = Account.all()
+
+      @currencyName = (account) ->
+        account.currency_name()
+
+      @totalValue = (account) ->
+        parseFloat(account.balance + account.locked).toFixed(4)
 
       # Might have a better way
       # #/deposits/btc

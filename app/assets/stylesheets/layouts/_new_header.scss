@@ -171,7 +171,9 @@
 .nbs-flexisel-nav-right.disabled {
   opacity: 0.4;
 }
-
+.nav-link:hover, .nav-link:focus{
+  color: #495057 !important;
+}
 .user-icon{
     width: 37px;
     border-radius: 100%;

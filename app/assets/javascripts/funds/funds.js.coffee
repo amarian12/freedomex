@@ -17,6 +17,8 @@ Deposit.initData         gon.deposits
 Account.initData         gon.accounts
 Currency.initData        gon.currencies
 Withdraw.initData        gon.withdraws
+Market.initData          gon.markets
+MarketTicker.initData    gon.tickers
 
 window.app = app = angular.module 'funds', ["ui.router", "ngResource", "translateFilters", "textFilters", "precisionFilters", 'htmlFilters']
 

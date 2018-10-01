@@ -30,8 +30,8 @@
       <td>{{ accountsCtrl.currencyName(account)}}</td>
       <td><a href="http://localhost:5000/trading/{{account.currency}}usd">{{ account.currency | uppercase }}</a>
       <td>{{account.balance | round_down }}</td>
-      <td>{{account.locked}}</td>
       <td>0.00</td>
+      <td>{{account.locked}}</td>
       <td>{{ accountsCtrl.totalValue(account)}}</td>
       <td>2.8552</td>
       <!-- <td>-0.4</td> -->

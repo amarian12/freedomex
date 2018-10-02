@@ -10,11 +10,15 @@
 @import 'layouts/header';
 @import 'layouts/new_header';
 
+@import 'ngDialog/ngDialog';
+@import 'ngDialog/ngDialog-theme-default';
+
 @import 'features/welcome';
 @import 'features/assets';
 @import 'features/history';
 @import 'features/funds';
 @import 'features/new_funds';
+@import 'features/custom';
 @import 'landing/new_style';
 @import 'landing/theme';
 

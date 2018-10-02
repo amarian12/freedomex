@@ -14,6 +14,7 @@
 #= require ./lib/pusher_connection
 #= require ./lib/tiny-pubsub
 
+#= require ngDialog/ngDialog
 #= require pusher.min
 #= require angular
 #= require angular-resource

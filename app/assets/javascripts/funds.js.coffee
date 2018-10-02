@@ -17,6 +17,7 @@
 #= require_self
 #= require ./funds/funds
 
+#= require ngDialog/ngDialog
 #= require jquery_ujs
 #= require bootstrap
 #

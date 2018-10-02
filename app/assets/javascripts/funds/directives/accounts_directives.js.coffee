@@ -4,7 +4,7 @@ app.directive 'accounts', ->
     #templateUrl: '/templates/funds/accounts.html'
     templateUrl: '/templates/funds/funds_account.html'
     scope: { localValue: '=accounts' }
-    controller: ($scope, $state, accountService) ->
+    controller: ($scope, $state, ngDialog) ->
       ctrl = @
       @state = $state
       if window.location.hash == ""
@@ -13,7 +13,6 @@ app.directive 'accounts', ->
       $scope.accounts       = Account.all()
       $scope.filterAccounts = () ->
         if (event.target.value && event.target.value.replace(/\s/g, "").length > 0)
-          #$scope.accounts   = Account.findAllBy('currency', event.target.value.toLowerCase())
           $scope.accounts   = Account.all().filter (account) ->
                                 return account.currency.includes event.target.value.toLowerCase()
         else
@@ -56,11 +55,20 @@ app.directive 'accounts', ->
         ctrl.state.transitionTo("deposits.currency", {currency: account.currency})
         ctrl.selectedCurrency = account.currency
         ctrl.currentAction = "deposits"
+        ctrl.openModal 'DepositsController', 'deposit'
 
       @withdraw = (account) ->
         ctrl.state.transitionTo("withdraws.currency", {currency: account.currency})
         ctrl.selectedCurrency = account.currency
         ctrl.currentAction    = "withdraws"
+        ctrl.openModal 'WithdrawsController', 'withdraw'
+
+      @openModal = (dialogueType, actionType) ->
+        ngDialog.open
+          template: '/templates/funds/'+actionType+'.html'
+          controller: dialogueType
+          className: 'ngdialog-theme-default custom-width'
+          data: {actionType: ctrl.currentAction}
 
       do @event = ->
         Account.bind "create update destroy", ->

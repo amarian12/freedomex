@@ -1,4 +1,4 @@
-app.controller 'WithdrawsController', ['$scope', '$stateParams', '$http', '$gon', ($scope, $stateParams, $http, $gon) ->
+app.controller 'WithdrawsController', ['$scope', '$stateParams', '$http', '$gon', 'ngDialog', ($scope, $stateParams, $http, $gon, ngDialog) ->
 
   $scope.currency = currency = $stateParams.currency
   $scope.currencyTranslationLocals = currency: currency.toUpperCase()

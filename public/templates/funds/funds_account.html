@@ -33,13 +33,13 @@
         <tr ng-repeat="account in accounts" bind="accounts">
           <td style="display: none;">{{accountsCtrl.setAccountMarket(account)}}</td>
           <td>
-            <span class="down-dot">
+            <span class="down-dot" ng-click="accountsCtrl.deposit(account)">
               <span></span>
               <i class="fa fa-long-arrow-down"></i>
             </span>
           </td>
           <td>
-            <span class="up-dot">
+            <span class="up-dot" ng-click="accountsCtrl.withdraw(account)">
               <span></span>
               <i class="fa fa-long-arrow-up"></i>
             </span>
@@ -57,3 +57,4 @@
     </table>
   </div>
 </div>
+

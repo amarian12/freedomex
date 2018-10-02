@@ -1,0 +1,18 @@
+// FundSource Management Dialog
+#funds-index {
+  .ngdialog.ngdialog-theme-default.custom-width {
+    padding: 10px;
+    .ngdialog-content {
+      width: 800px;
+      #transaction_content_box {
+        height: 75vh;
+        overflow-x: scroll;
+      }
+    }
+  }
+}
+
+// ngDialog Confim Dialog
+.ngdialog.ngdialog-theme-default .dialog-contents {
+  button.cancel { margin-right: 10px; }
+}

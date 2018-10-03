@@ -45,7 +45,7 @@
             </span>
           </td>
           <td>{{ currencyName | uppercase}}</td>
-          <td><a href="http://localhost:5000/trading/{{marketName}}" target="_blank">{{ account.currency | uppercase }}</a>
+          <td><a href="/trading/{{marketName}}" target="_blank">{{ account.currency | uppercase }}</a>
           <td>{{account.balance | round_down }}</td>
           <td>0.00</td>
           <td>{{account.locked}}</td>

@@ -39,7 +39,7 @@ app.directive 'accounts', ->
         $scope.accountMarket    = Market.findBy('bid_unit', account.currency) || Market.findBy('ask_unit', account.currency) || {}
         $scope.marketName       = $scope.accountMarket.id
         $scope.marketTicker     = MarketTicker.findBy('name', $scope.accountMarket.name)
-        $scope.totalValue       = parseFloat(account.balance + account.locked).toFixed(4)
+        $scope.totalValue       = (parseFloat(account.balance) + parseFloat(account.locked)).toFixed(4)
 
       @filterAccounts = (filterString) ->
         return true

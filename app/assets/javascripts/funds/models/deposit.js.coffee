@@ -6,6 +6,18 @@ class Deposit extends PeatioModel.Model
       $.each records, (idx, record) ->
         Deposit.create(record)
 
+  @filterByState = (currency, aasm_state) ->
+    ref = @findAllBy('currency', currency)
+    records = []
+    j = 0
+    len = ref.length
+    while j < len
+      record = ref[j]
+      if record.aasm_state == aasm_state
+        records.push record.clone()
+      j++
+    return records
+
 window.Deposit = Deposit
 
 

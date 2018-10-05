@@ -31,6 +31,7 @@ app.directive 'accounts', ->
 
       $scope.currencyName = ""
       $scope.totalValue = "0.0"
+      $scope.pendingDeposit = "0.0"
       $scope.accountMarket = {}
       $scope.marketName = ""
       $scope.marketTicker = {}
@@ -40,6 +41,14 @@ app.directive 'accounts', ->
         $scope.marketName       = $scope.accountMarket.id
         $scope.marketTicker     = MarketTicker.findBy('name', $scope.accountMarket.name)
         $scope.totalValue       = (parseFloat(account.balance) + parseFloat(account.locked)).toFixed(4)
+        $scope.pendingDeposit   = ctrl.pendingDeposit account
+
+      @pendingDeposit = (account) ->
+        deposits = Deposit.filterByState(account.currency, 'submitted'); amount = 0.0; j = 0; len = deposits.length
+        while j < len
+          record = deposits[j]; amount += parseFloat(record.amount); j++
+        return amount.toFixed(2)
+
 
       @filterAccounts = (filterString) ->
         return true
@@ -69,10 +78,6 @@ app.directive 'accounts', ->
           controller: dialogueType
           className: 'ngdialog-theme-default custom-width'
           data: {actionType: ctrl.currentAction}
-
-      do @event = ->
-        Account.bind "create update destroy", ->
-          $scope.$apply()
 
       do @event = ->
         Account.bind "create update destroy", ->

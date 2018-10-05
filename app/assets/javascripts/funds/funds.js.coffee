@@ -22,3 +22,4 @@ MarketTicker.initData    gon.tickers
 
 window.app = app = angular.module 'funds', ["ui.router", "ngResource", "ngDialog", "translateFilters", "textFilters", "precisionFilters", 'htmlFilters']
 
+

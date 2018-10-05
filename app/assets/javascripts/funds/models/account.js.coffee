@@ -21,4 +21,5 @@ class Account extends PeatioModel.Model
   topWithdraws: ->
     @withdraws().reverse().slice(0,3)
 
+
 window.Account = Account

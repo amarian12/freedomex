@@ -31,7 +31,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="account in accounts" bind="accounts">
-          <td style="display: none;">{{accountsCtrl.setAccountMarket(account)}}</td>
+          <td style="display: none;">{{ accountsCtrl.setAccountMarket(account) }}</td>
           <td>
             <span class="down-dot" ng-click="accountsCtrl.deposit(account)">
               <span></span>
@@ -44,11 +44,11 @@
               <i class="fa fa-long-arrow-up"></i>
             </span>
           </td>
-          <td>{{ currencyName | uppercase}}</td>
+          <td>{{ currencyName | uppercase }}</td>
           <td><a href="/trading/{{marketName}}" target="_blank">{{ account.currency | uppercase }}</a>
-          <td>{{account.balance | round_down }}</td>
-          <td>0.00</td>
-          <td>{{account.locked}}</td>
+          <td>{{ account.balance | round_down }}</td>
+          <td>{{ pendingDeposit }}</td>
+          <td>{{ account.locked }}</td>
           <td>{{ totalValue }}</td>
           <td>2.8552</td>
           <!-- <td>-0.4</td> -->

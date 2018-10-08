@@ -4,7 +4,7 @@ app.directive 'accounts', ->
     #templateUrl: '/templates/funds/accounts.html'
     templateUrl: '/templates/funds/funds_account.html'
     scope: { localValue: '=accounts' }
-    controller: ($scope, $state, ngDialog) ->
+    controller: ($scope, $state, ngDialog, $http) ->
       ctrl = @
       @state = $state
       if window.location.hash == ""
@@ -29,6 +29,7 @@ app.directive 'accounts', ->
       @isSelected = (currency) ->
         @selectedCurrency == currency
 
+
       $scope.currencyName = ""
       $scope.totalValue = "0.0"
       $scope.pendingDeposit = "0.0"
@@ -42,12 +43,20 @@ app.directive 'accounts', ->
         $scope.marketTicker     = MarketTicker.findBy('name', $scope.accountMarket.name)
         $scope.totalValue       = (parseFloat(account.balance) + parseFloat(account.locked)).toFixed(4)
         $scope.pendingDeposit   = ctrl.pendingDeposit account
+        $scope.estimatedValue = ctrl.estimatedValue account
 
       @pendingDeposit = (account) ->
         deposits = Deposit.filterByState(account.currency, 'submitted'); amount = 0.0; j = 0; len = deposits.length
         while j < len
           record = deposits[j]; amount += parseFloat(record.amount); j++
         return amount.toFixed(2)
+
+      $scope.price = {}
+      @estimatedValue = (account) ->
+        curr = account.currency.toUpperCase();
+        $.getJSON 'https://min-api.cryptocompare.com/data/price?tsyms=BTC&fsym='+curr, (data) ->
+          $scope.price[curr] =  data['BTC']
+        return $scope.price[curr]
 
 
       @filterAccounts = (filterString) ->

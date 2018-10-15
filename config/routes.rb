@@ -29,6 +29,9 @@ Peatio::Application.routes.draw do
 
   scope module: :private do
     resources :settings, only: [:index]
+      put 'change_password' => 'settings#change_password'
+      post 'account_data' => 'settings#account_data'
+      # post :identity_verification
 
     resources :withdraw_destinations, only: %i[ create update ]
 

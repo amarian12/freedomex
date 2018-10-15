@@ -1,0 +1,109 @@
+<%# content_for :frame do %>
+  <%= form_tag account_data_path , method: :post , :authenticity_token => true  do %>
+    <div class="pt-9">
+      <h3>Personal Details</h3>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-6">
+                <label>First Name</label>
+                <%= text_field_tag "profile[first_name]",(@profile["first_name"] rescue nil), class: "form-control", required: true %>
+              </div>
+              <div class="col-md-6">
+                <label class="control-lable">Last Name</label>
+                <%= text_field_tag "profile[last_name]",(@profile["last_name"] rescue nil), class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="control-lable">Date of birth</label>
+            <div class="row">
+              <% if @profile.nil? %>
+              <div class="select-box">
+                <%=date_select("profile", "dob", options = { :start_year => 1970 ,:end_year => Date.current.year - 3}, html_options = {class: "form-control"})%>
+              </div>
+              <% else %>
+                 <div class="select-box">
+                    <%=date_select("profile", "dob", options = { :selected => (@profile["dob"].to_date rescue nil) }, html_options = {class: "form-control" })%>
+                </div>
+
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-lable">Address</label>
+            <div class="row">
+              <div class="col-md-12">
+                <%= text_field_tag "profile[address]",(@profile["address"] rescue nil) , class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-lable">City</label>
+            <div class="row">
+              <div class="col-md-12">
+                <%= text_field_tag "profile[city]",(@profile["city"] rescue nil), class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-lable">Postal code</label>
+            <div class="row">
+              <div class="col-md-12">
+                <%= text_field_tag "profile[postcode]",(@profile["postcode"] rescue nil), class: "form-control", required: true %>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-lable">Country</label>
+            <div class="row">
+              <div class="col-md-12">
+               <%= text_field_tag "profile[country]",(@profile["country"] rescue nil), class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="text_wrap"></div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-12">
+                <% if @profile.nil? %>
+                  <%= submit_tag  "Save", class: "btn btn-primary float-right"%>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<%#end%>
+<style type="text/css">
+  #guide{
+    display: none;
+  }
+</style>

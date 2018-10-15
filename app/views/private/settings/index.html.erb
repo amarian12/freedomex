@@ -1,11 +1,108 @@
-<% content_for :guide_title do %>
-  <h3 class="profile-email">
+<%# content_for :guide_title do %>
+  <!-- <h3 class="profile-email">
     <i class="fa fa-user"></i><span><%= current_user.email %></span>
-  </h3>
-<% end %>
+  </h3> -->
+<%# end %>
 
-<% content_for :guide do %>
-  <% if current_user.admin? %>
-    <span class="badge badge-warning">ADMIN</span>
-  <% end %>
-<% end %>
+<%# content_for :guide do %>
+  <%# if current_user.admin? %>
+    <!-- <span class="badge badge-warning">ADMIN</span> -->
+  <%# end %>
+<%# end %>
+<div class="container">
+  <div class="col-md-12  bhoechie-tab-container row">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+      <div class="list-group border-box left-box">
+
+        <a href="#" class="list-group-item active">
+          Change Account data
+        </a>
+        <a href="#" class="list-group-item">
+          Identity Verification
+        </a>
+        <a href="#" class="list-group-item">
+          Password
+        </a>
+        <a href="#" class="list-group-item">
+         Two Factor Authentication
+        </a>
+        <a href="#" class="list-group-item">
+          API Keys
+        </a>
+        <a href="#" class="list-group-item">
+          IP-Whitelist
+        </a>
+        <a href="#" class="list-group-item">
+          Withdrawel Whitelist
+        </a>
+        <a href="#" class="list-group-item">
+          UI settings
+        </a>
+        <a href="#" class="list-group-item">
+          Notifications
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab border-box right-box">
+      <div class="bhoechie-tab-content active form-items">
+        <center>
+          <%= render 'private/settings/account_data' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/identity_verify' %>
+        </center>
+      </div>
+      <!-- <h4>Settings</h4> -->
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/change_password' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/two_factor' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/api_key' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/ip_whitelist' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/withdraw_whitelist' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/ui_setting' %>
+        </center>
+      </div>
+      <div class="bhoechie-tab-content">
+        <center>
+          <%= render 'private/settings/notification' %>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
+});
+</script>

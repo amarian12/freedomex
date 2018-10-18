@@ -4,12 +4,13 @@
 class SessionsController < ApplicationController
   before_action :auth_member!, only: :destroy
   before_action :auth_anybody!, only: :failure
+  #before_action :loggedin_ip_confirmation, only: :create
 
   def create
     @member = Member.from_auth(auth_hash)
-
     return redirect_on_unsuccessful_sign_in unless @member
     return redirect_to(root_path, alert: t('.disabled')) if @member.disabled?
+    return redirect_to(root_path, alert: 'Please check you mail and confirm IP address.') unless loggedin_ip_confirmation
 
     reset_session rescue nil
     session[:member_id] = @member.id
@@ -29,6 +30,18 @@ class SessionsController < ApplicationController
   end
 
 private
+
+  def loggedin_ip_confirmation
+    member = @member
+    unless member.logged_in_ips.where(is_confirmed: true).map(&:ip_address).include?(request.remote_ip)
+      logged_in_ip = member.logged_in_ips.create(ip_address: request.remote_ip)
+      reset_session
+      MemberMailer.ip_address_confirmation_instructions(member, logged_in_ip.token).deliver_now rescue true
+      flash[:notice] = 'Please check you mail and confirm IP address.'
+      return false
+    end
+    return true
+  end
 
   def auth_hash
     @auth_hash ||= request.env['omniauth.auth']

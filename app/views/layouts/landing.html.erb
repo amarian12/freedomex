@@ -17,6 +17,13 @@
   </head>
 
    <body id="<%= body_id %>" data-lang="<%= locale_name %>">
+    <div class="container">
+      <%- if flash[:notice].present? %>
+        <div class="alert alert-info">
+          <%= flash[:notice] %>
+        </div>
+      <% end -%>
+    </div>
     <header>
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-dark bg-dark py-3" id="navbar_main">
           <div class="container">
@@ -65,15 +72,19 @@
                           <a class="nav-link" href="../docs/alerts.html" role="button">Components</a>
                       </li>
                   </ul> -->
+
+
                   <ul class="navbar-nav align-items-lg-center ml-lg-auto">
                     <li class="nav-item">
                         <a id="server-time" class="nav-link" href="#"></a>
                     </li>
                   </ul>
               </div>
+
           </div>
       </nav>
     </header>
+
     <%= yield %>
     <div id="push"></div>
     <%= render 'shared/footer' %>

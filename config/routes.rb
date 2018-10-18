@@ -27,6 +27,8 @@ Peatio::Application.routes.draw do
   get '/auth/failure' => 'sessions#failure', :as => :failure
   match '/auth/:provider/callback' => 'sessions#create', via: %i[get post]
 
+
+  get 'confirm_login_ip', to: 'logged_in_ips#confirm_login_ip', as: :confirm_login_ip
   scope module: :private do
     resources :settings, only: [:index]
       put 'change_password' => 'settings#change_password'

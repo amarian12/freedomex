@@ -3,7 +3,7 @@
 
 require File.expand_path('../boot', __FILE__)
 
-require 'rails'
+require 'rails/all'
 
 %w( active_record action_controller action_view sprockets ).each { |framework| require "#{framework}/railtie" }
 

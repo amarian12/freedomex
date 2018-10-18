@@ -10,6 +10,7 @@ class Member < ActiveRecord::Base
   has_many :withdraws, -> { order(id: :desc) }
   has_many :deposits, -> { order(id: :desc) }
   has_many :authentications, dependent: :delete_all
+  has_many :logged_in_ips, dependent: :destroy
 
   scope :enabled, -> { where(disabled: false) }
 

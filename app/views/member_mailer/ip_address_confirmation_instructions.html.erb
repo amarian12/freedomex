@@ -1,0 +1,9 @@
+<p>Welcome <%= @member.email %>!</p>
+
+<p>There has been a login from a new location <b><%= @ip %></b>.
+
+If you are the one logging in, please confirm your by clicking the link below:</p>
+
+<p>
+  <%= link_to 'Confirm', confirm_login_ip_url(id: @member.id,  token: @token) %>
+</p>

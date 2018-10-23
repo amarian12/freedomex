@@ -33,7 +33,7 @@ private
 
   def loggedin_ip_confirmation
     member = @member
-    unless member.logged_in_ips.where(is_confirmed: true).map(&:ip_address).include?(request.remote_ip)
+    unless member.logged_in_ips.where(is_confirmed: true, ip_address: request.remote_ip).present?
       logged_in_ip = member.logged_in_ips.create(ip_address: request.remote_ip)
       reset_session
       MemberMailer.ip_address_confirmation_instructions(member, logged_in_ip.token).deliver_now rescue true

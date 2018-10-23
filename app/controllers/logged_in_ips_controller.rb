@@ -1,10 +1,11 @@
 class LoggedInIpsController < ApplicationController
   def confirm_login_ip
-    @loggedip = LoggedInIp.find_by(:token=>"Ojox\n")
-    if @loggedip.ip_address == request.remote_ip
-      @loggedip.is_confirmed = true
-      @loggedip.save
+    @loggedip = LoggedInIp.where(token: params[:token], ip_address: request.remote_ip).last
+    if @loggedip && @loggedip.update(is_confirmed: true)
+      flash[:notice] = "IP confirmed. Please Login now!"
+    else
+      flash[:notice] = "No request IP found! Please confirm again!"
     end
-    redirect_to "/auth/#{ENV['OAUTH2_SIGN_IN_PROVIDER'] == 'google' ? 'google_oauth2' : ENV['OAUTH2_SIGN_IN_PROVIDER']}"
+    redirect_to root_path
   end
 end

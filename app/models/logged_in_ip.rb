@@ -5,7 +5,7 @@ class LoggedInIp < ActiveRecord::Base
 
   private
   def set_ip_token
-    self.token = Base64.encode64(self.ip_address)
+    self.token = Base64.encode64(self.ip_address + DateTime.now.to_i.to_s + self.member.sn)
   end
 end
 

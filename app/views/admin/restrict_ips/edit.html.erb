@@ -1,0 +1,11 @@
+<%= form_for @restrictip, :url => admin_restrict_ip_path(@restrictip) do |f| %>
+
+  <div class="form-group">
+    <%= f.label :whitelisted_ip%>
+    <%= f.text_field :whitelisted_ip, class: 'form-control col-sm-5', placeholder: "Enter Ip Address"%>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit 'Submit', class: 'btn btn-primary btn-sm' %>
+  </div>
+<%end%>

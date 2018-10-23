@@ -103,6 +103,15 @@
           <% end %>
         </li>
       <% end %>
+
+      <% if can? :manage, RestrictedIp %>
+        <li class="list-icon-item <% check_active('restrictedip') %>">
+          <%= link_to admin_restrict_ips_path do %>
+            <i class="icon fa fa-globe"></i>
+            <span class="menu-text">Whitelisted IPs</span>
+          <% end %>
+        </li>
+      <% end %>
     </ul>
   </div>
 </div>

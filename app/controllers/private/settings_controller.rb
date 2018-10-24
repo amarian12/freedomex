@@ -5,6 +5,7 @@ module Private
   class SettingsController < BaseController
     helper_method :tabs
     def index
+      @loggedips = current_user.logged_in_ips
       begin
         @profile = RestClient.get(
           "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/profiles/me?access_token="+current_user.auth('barong').token
@@ -55,4 +56,3 @@ module Private
 
   end
 end
-

@@ -4,27 +4,29 @@
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap
-#= require scrollIt
-#= require bignumber
-#= require underscore
-#= require clipboard
 #= require pusher.min
-#= require qrcode
 
-#= require ./lib/pusher_connection
 #= require ./lib/tiny-pubsub
-
-#= require ngDialog/ngDialog
-#= require pusher.min
 #= require angular
 #= require angular-resource
 #= require ./lib/angular-ui-router
 #= require ./lib/peatio_model
 #= require ./lib/ajax
+
+#= require ./lib/pusher_connection
 #= require ./lib/pusher_subscriber
-#= require ./dashboard/dashboard
-#= require jquery.flexisel
+
 #= require ./header_coffee
+#= require ./dashboard/dashboard
+
+#= require scrollIt
+#= require bignumber
+#= require underscore
+#= require clipboard
+#= require qrcode
+#= require jquery.flexisel
+
+#= require ngDialog/ngDialog
 
 $ ->
   BigNumber.config(ERRORS: false)

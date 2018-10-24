@@ -33,7 +33,9 @@ Peatio::Application.routes.draw do
     resources :settings, only: [:index]
       put 'change_password' => 'settings#change_password'
       post 'account_data' => 'settings#account_data'
-      # post :identity_verification
+      post 'generate_qrcode' => 'settings#generate_qrcode'
+      post 'enabled_2fa' => 'settings#enabled_2fa'
+
 
     resources :withdraw_destinations, only: %i[ create update ]
 
@@ -71,6 +73,7 @@ Peatio::Application.routes.draw do
           post :clear
         end
       end
+
     end
 
     post '/pusher/auth', to: 'pusher#auth'

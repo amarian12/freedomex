@@ -1,0 +1,54 @@
+<div class="md-4">
+  <legend> Two-Factor Authentication</legend>
+  <div class="flash-message" style="display: none">
+    <div class="alert alert-dismissable alert-custom-danger alert-danger">
+      <button class="close" type="button" data-dismiss="alert" aria-hidden="true">×</button>
+      <i class="icon fa fa-times"></i>
+      <h2 class="h5 mb-0"><span id='msg-flash'></span></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group text-left col-md-8">
+      <p>For better security purpose, you need to enable first authenticator app.</p>
+      <div id="qr-code">
+        <img alt="Scan me!" src="" style="display: none;">
+      </div>
+      <div class="clearfix"></div>
+      <div class="enabled-form" style="display: none;">
+        <%= form_tag enabled_2fa_path do %>
+        <%= text_field_tag "code",nil,class: "form-control md-5" %>
+        <%= submit_tag "Enable 2FA", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+    <div class="form-group text-right col-md-4">
+      <%= form_tag "javascript:void(0)", id:"qr-code"  do %>
+      <%= submit_tag  "Genrate QR", class: "btn btn btn-primary btn-color", id: "qr-request" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).on("click","#qr-request",function(){
+    $.ajax({
+       type: 'POST',
+       url: "<%= generate_qrcode_path %>",
+       data: "" ,
+       dataType: 'json',
+       success: function(response){
+        if (response.message == "400 Bad Request"){
+        $(".flash-message").css("display","block");
+          $("#msg-flash").html("2FA has been enabled for this account");
+        }
+        else{
+        if (response.qr_code.data.barcode != undefined){
+        $(".enabled-form").css("display","block")
+        $("#qr-code img").css("display","block")
+        var img = "data:image/png;base64,"+ response.qr_code.data.barcode
+        $("#qr-code img").attr('src',img)
+        }
+      }
+     }
+ })
+})
+</script>

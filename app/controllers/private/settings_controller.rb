@@ -3,7 +3,7 @@
 
 module Private
   class SettingsController < BaseController
-    helper_method :tabs
+
     def index
       @loggedips = current_user.logged_in_ips
       begin
@@ -12,8 +12,7 @@ module Private
         )
         @profile =  JSON.parse @profile
       rescue => e
-
-         flash[:alert] = e.message if !@profile.blank?
+        flash[:alert] = e.message if !@profile.blank?
       end
     end
 
@@ -27,10 +26,34 @@ module Private
           @status = true
           flash[:notice] =  "Password Changed!"
         rescue => e
-           flash[:alert] = e.message
+          flash[:alert] = e.message
         end
         redirect_to settings_path
       end
+    end
+
+    def generate_qrcode
+      begin
+        @api_accesses = RestClient.post(
+          "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/security/generate_qrcode?access_token="+current_user.auth('barong').token,params)
+        @qr_code =  JSON.parse @api_accesses
+      rescue => e
+        @message = e.message
+      end
+      render :json => {:qr_code => @qr_code,
+                                  :message => @message }
+    end
+
+    def enabled_2fa
+      begin
+        @enabled_2fa = RestClient.post(
+          "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/security/enable_2fa?access_token="+current_user.auth('barong').token,params
+        )
+        @enabled_2fa =  JSON.parse @enabled_2fa
+      rescue => e
+         flash[:alert] = e.message
+      end
+      redirect_to settings_path
     end
 
     def identity_verification

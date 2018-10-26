@@ -1,0 +1,16 @@
+<div class="table">
+  <table width="100%">
+    <thead>
+      <tr>
+        <th>Confirmed IP Lists</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%@loggedips.each do |ip|%>
+        <tr>
+          <td><%=ip.ip_address%></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+</div>

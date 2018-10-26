@@ -16,6 +16,8 @@ defaults: &defaults
   # Session lifetime in seconds.
   SESSION_LIFETIME: '3600'
 
+  SECRET_KEY_BASE: '973f91b15882458906642664367f59846c891f5efafb5c723530bd975c6e8867784eafb162062e9f1c0837634bf6177c7db019b2d8ed288a60304c4beafe1e18'
+
   # WebSocket Streaming API settings.
   WEBSOCKET_HOST:  0.0.0.0
   WEBSOCKET_PORT: '8080'
@@ -27,14 +29,14 @@ defaults: &defaults
   LOG_LEVEL: ~ # Default level for production is warn, otherwise – debug.
 
   # Configuration variables for Pusher.
-  PUSHER_APP:              '468163'
-  PUSHER_SECRET:           671b8d34f5ed60160172
-  PUSHER_HOST:             api-eu.pusher.com
+  PUSHER_APP:              '596732'
+  PUSHER_SECRET:           d8a79b0c356aecfb808e
+  PUSHER_HOST:             api-ap2.pusher.com
   PUSHER_PORT:             '443'
   PUSHER_SCHEME:           https
-  PUSHER_CLIENT_KEY:       995279a074b2cd777cf0
-  PUSHER_CLIENT_HTTP_HOST: sockjs-eu.pusher.com
-  PUSHER_CLIENT_WS_HOST:   ws-eu.pusher.com
+  PUSHER_CLIENT_KEY:       25f7b86aaa74a97823a0
+  PUSHER_CLIENT_HTTP_HOST: sockjs-ap2.pusher.com
+  PUSHER_CLIENT_WS_HOST:   ws-ap2.pusher.com
   PUSHER_CLIENT_WS_PORT:   '80'
   PUSHER_CLIENT_WSS_PORT:  '443'
   PUSHER_CLIENT_ENCRYPTED: 'on'
@@ -64,6 +66,8 @@ defaults: &defaults
   BARONG_CLIENT_ID:           73632f7a321142b31988b374768212a7e5d4ce732760eafc0675ae2ea8b798cf
   BARONG_CLIENT_SECRET:       8ffae9b0460f57e48d1a9efc8cbe8896b630a91610872c5fc7d8f682034a58a1
   BARONG_DOMAIN:              http://freedomex.io:3030
+  BARONG_SIGNOUT_PATH:         "/accounts/sign_out"
+  BARONG_SIGNUP_PATH:         "/accounts/sign_up"
   BARONG_OAUTH2_REDIRECT_URL: http://freedomex.io/auth/barong/callback
 
   # Configuration variables for API CORS.
@@ -72,7 +76,7 @@ defaults: &defaults
   # By default it allows access to API from all origins.
   # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
   API_CORS_ORIGINS:           '*'
-  API_CORS_ALLOW_CREDENTIALS: ~
+  API_CORS_ALLOW_CREDENTIALS: barong
 
   # Configuration variables for Sentry.
   SENTRY_DSN_BACKEND:  ~          # Specify Sentry DSN used for Rails application.
@@ -184,8 +188,16 @@ development:
   AUTH0_OAUTH2_CLIENT_ID:     lGKS9ADpknQr415RNZrrQTf3Jh8k2Fvc
   AUTH0_OAUTH2_CLIENT_SECRET: LxUPnrrrpRHSB-vVgWU3TwmakQ8acY5mYVTaVgkREQL3i9avjpOnWTXSSEsrbLzK
 
+  BARONG_CLIENT_ID:           7a6fd9668360f2e3100a4d386b5e9c7b14c4c635b315d08c40bcfa6bd46b6988
+  BARONG_CLIENT_SECRET:       8f9feb1d22c6c05deecaf0a591ed410ae2ea065ceb0bbfd79db514aa1eba769c
+  BARONG_DOMAIN:              http://localhost:4000
+  BARONG_SIGNOUT_PATH:         "/accounts/sign_out"
+  BARONG_SIGNUP_PATH:         "/accounts/sign_up"
+  BARONG_OAUTH2_REDIRECT_URL: http://localhost:3000/
+
 test:
   <<: *defaults
 
 production:
   <<: *defaults
+

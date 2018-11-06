@@ -10,10 +10,9 @@
   <%# end %>
 <%# end %>
 <div class="container">
-  <div class="col-md-12  bhoechie-tab-container row">
-    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+  <div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-3 col-xs-3 bhoechie-tab-menu">
       <div class="list-group border-box left-box">
-
         <a href="#" class="list-group-item active">
           Change Account data
         </a>
@@ -43,7 +42,7 @@
         </a>
       </div>
     </div>
-    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab border-box right-box">
+    <div class="col-lg-8 col-md-8 col-sm-9 col-xs-9 bhoechie-tab border-box right-box">
       <div class="bhoechie-tab-content active form-items">
         <center>
           <%= render 'private/settings/account_data' %>
@@ -51,7 +50,7 @@
       </div>
       <div class="bhoechie-tab-content">
         <center>
-          <%#= render 'private/settings/identity_verify' %>
+          <%= render 'private/settings/identity_verify' %>
         </center>
       </div>
       <!-- <h4>Settings</h4> -->

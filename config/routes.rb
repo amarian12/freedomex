@@ -30,13 +30,16 @@ Peatio::Application.routes.draw do
 
   get 'confirm_login_ip', to: 'logged_in_ips#confirm_login_ip', as: :confirm_login_ip
   scope module: :private do
-    resources :settings, only: [:index]
+    resources :settings, only: [:index] do
+      match :verify_contact, on: :collection, via: %w(get post put)
+    end
       put 'change_password' => 'settings#change_password'
       post 'account_data' => 'settings#account_data'
       post 'generate_qrcode' => 'settings#generate_qrcode'
       post 'enabled_2fa' => 'settings#enabled_2fa'
-
-
+      post 'verify_phone' => 'settings#verify_phone'
+      post 'upload_document' => 'settings#upload_document'
+ 
     resources :withdraw_destinations, only: %i[ create update ]
 
     resources :funds, only: [:index] do

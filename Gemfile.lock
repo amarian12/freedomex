@@ -75,6 +75,8 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
+    bootstrap-datepicker-rails (1.8.0.1)
+      railties (>= 3.0)
     builder (3.2.3)
     bunny (2.9.2)
       amq-protocol (~> 2.3.0)
@@ -434,6 +436,7 @@ DEPENDENCIES
   annotate (~> 2.7)
   arel-is-blank (~> 1.0.0)
   bootstrap (~> 4.1.1)
+  bootstrap-datepicker-rails
   bunny (~> 2.9.2)
   cancancan (~> 2.2.0)
   capybara (~> 2.17)
@@ -508,4 +511,4 @@ DEPENDENCIES
   webmock (~> 3.3)
 
 BUNDLED WITH
-   1.16.2
+   1.17.1

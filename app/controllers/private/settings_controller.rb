@@ -44,6 +44,73 @@ module Private
                                   :message => @message }
     end
 
+    # def update_phone
+    #     begin
+    #       @update_phone = RestClient.post(
+    #         "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones?access_token="+current_user.auth('barong').token,params
+    #       )
+    #       @status = true
+    #       flash[:notice] =  "phone submitted!"
+    #     rescue => e
+    #       flash[:alert] = e.message
+    #     end
+    #     redirect_to settings_path
+    #   end
+
+    def verify_contact
+      begin
+
+          @update_phone = RestClient.post(
+            "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones?access_token="+current_user.auth('barong').token,params
+          )
+          @status = true
+          flash[:notice] =  "phone submitted!"
+        rescue => e
+          flash[:alert] = e.message
+        end
+        redirect_to settings_path
+    end
+
+    def upload_document
+      begin
+          @document = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/documents?access_token="+current_user.auth('barong').token,params )
+          @status = true
+          flash[:notice] =  "Document submitted!"
+        rescue => e
+          flash[:alert] = e.message
+        end
+         render :json => {:document => @document,
+                                  :message => @message }
+    end
+
+
+  def verify_phone
+      begin
+          @update_phone = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones/verify?access_token="+current_user.auth('barong').token,params )
+          debugger
+          @status = true
+          flash[:notice] =  "phone submitted!"
+        rescue => e
+          flash[:alert] = e.message
+        end
+      render :json => {:phone_verfiy => @update_phone,
+                                  :message => @message }
+                                end
+      # def send_code
+      #   begin
+      #    @send_code = RestClient.post(
+      #       "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones?access_token="+current_user.auth('barong').token,params
+      #       )
+      #     @status = true
+      #     flash[:notice] =  "send submitted!"
+      #   rescue => e
+      #     flash[:alert] = e.message
+      #   end
+      # render :json => {:code => @send_code,
+      #                             :message => @message }
+
+      # end
+
     def enabled_2fa
       begin
         @enabled_2fa = RestClient.post(

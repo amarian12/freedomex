@@ -1,0 +1,73 @@
+
+<%= form_tag "JavaScript:void(0);", method: :POST, id: "upload-document" do %>
+  <div class="custom-form form-items">
+    <h3>Identity Verification</h3>
+    <div class="form-group">
+      <div class="row">
+
+        <div class="col-md-6">
+            <label class="control-label">Document Expiry</label>
+            <div class="down-arrow">
+              <input type="text" class='datepicker form-control' name="doc_expire" placeholder="Document Expiry">
+              <script type="text/javascript">
+                $(document).ready(function(){
+                  $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+                });
+              </script>
+            </div>
+        </div>
+
+        
+        <div class="col-md-6">
+          <label class="control-label">Document Type</label>
+          <%= select_tag(:doc_type, options_for_select([['Passport', 'Passport'], ['Identity card', 'Identity card'], ['Driver license', 'Driver license'], ['Utility Bill','Utility Bill']]), class: "form-control") %>
+        </div>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Document Number</label>
+            <%#= form.label :doc_number, 'Document number' %>
+            <%#= text_field_tag :doc_number%>
+            <input type="text" class="form-control" placeholder="Enter Document Number">
+          </div>
+        </div>  
+
+        <div class="col-md-6 ">
+          <label class="control-label">Document upload</label>
+          <%= file_field_tag :upload %>
+        </div>
+      </div>
+    </div>  
+
+    <div class="actions">
+      <%= submit_tag 'Submit', class: 'btn btn-bg' %>
+    </div>
+  </div>  
+<% end %>
+    
+
+
+<script type="text/javascript">
+     
+    $("#upload-document").submit(function(){
+       var file_data = $("#upload").prop("files")[0];   // Getting the properties of file from file field
+       var form = $("#upload-document")[0]
+       var form_data = new FormData(form);                  // Creating object of FormData class
+       form_data.append("upload", file_data)              // Appending parameter named file with properties of file_field to form_data
+       $.ajax({
+         url: "<%=upload_document_path%>",
+         cache: false,
+         contentType: false,
+         processData: false,
+         data: form_data,                         // Setting the data attribute of ajax with file_data
+         type: 'post',
+         success: function(response){
+           window.location.href = "/settings"
+         }
+       })
+     })
+   </script>

@@ -1,5 +1,4 @@
 <div class="md-4">
-  <legend> Two-Factor Authentication</legend>
   <div class="flash-message" style="display: none">
     <div class="alert alert-dismissable alert-custom-danger alert-danger">
       <button class="close" type="button" data-dismiss="alert" aria-hidden="true">×</button>
@@ -7,26 +6,37 @@
       <h2 class="h5 mb-0"><span id='msg-flash'></span></h2>
     </div>
   </div>
-  <div class="row">
-    <div class="form-group text-left col-md-8">
-      <p>For better security purpose, you need to enable first authenticator app.</p>
-      <div id="qr-code">
-        <img alt="Scan me!" src="" style="display: none;">
+
+  <div class="custom-form form-items">
+    <h3>Two-Factor Authentication</h3>
+    <div class="row">
+      <div class="form-group text-left col-md-8">
+        <p>For better security purpose, you need to enable first authenticator app.</p>
+        <div id="qr-code">
+          <img alt="Scan me!" src="" style="display: none;">
+        </div>
+        <div class="clearfix"></div>
       </div>
-      <div class="clearfix"></div>
-      <div class="enabled-form" style="display: none;">
-        <%= form_tag enabled_2fa_path do %>
-        <%= text_field_tag "code",nil,class: "form-control md-5" %>
-        <%= submit_tag "Enable 2FA", class: "btn btn-primary" %>
+      <div class="form-group text-right col-md-4">
+        <%= form_tag "javascript:void(0)", id:"qr-code"  do %>
+          <%= submit_tag  "Genrate QR", class: "btn btn btn-primary btn-color", id: "qr-request" %>
         <% end %>
       </div>
     </div>
-    <div class="form-group text-right col-md-4">
-      <%= form_tag "javascript:void(0)", id:"qr-code"  do %>
-      <%= submit_tag  "Genrate QR", class: "btn btn btn-primary btn-color", id: "qr-request" %>
-      <% end %>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="enabled-form" style="display: none;">
+          <%= form_tag enabled_2fa_path do %>
+          <%= text_field_tag "code",nil,class: "form-control md-5" %>
+          <div class="actions mt-2 mb-2"> 
+            <%= submit_tag "Enable 2FA", class: "btn btn-bg" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
+  </div>  
 </div>
 <script type="text/javascript">
   $(document).on("click","#qr-request",function(){

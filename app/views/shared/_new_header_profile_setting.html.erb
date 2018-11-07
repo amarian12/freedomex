@@ -3,7 +3,7 @@
 <li class="nav-item dropdown account-settings text-left <%= dropdown_class %>">
   <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
     <span class="user-icon"><img src="/assets/default-profile.png" ></span>
-    <span><%= current_user.email %></span>
+    <span class="email-limit"><%= current_user.email %></span>
   </a>
   <a class="nav-link" href="<%= main_app.signout_path %>">
     <span class="log-out-btn"><%#= t('header.signout') %>Logout</span>

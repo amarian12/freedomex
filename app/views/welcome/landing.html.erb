@@ -4,7 +4,7 @@
     <div class="container">
       <div class="row row-grid justify-content-around align-items-center">
         <div class="col-lg-6">
-          <div class="pt-lg-md text-center">
+          <div class="text-center">
             <div><img src="/assets/freedomex-logo.gif" width="200"></div>
             <center><img src="/assets/freedom.png"></center>
             <% unless current_user %>
@@ -21,7 +21,7 @@
                 </div>
               <% end %>
             <% else %>
-            <div class="mt-5">
+            <div class="mt-3">
               <a  class="login-btn-2" href="<%= settings_path %>" role="button">
                 <i class="fa fa-user profile-icon"></i>
               <%#= t('header.settings') %><%=current_user.email%></a>

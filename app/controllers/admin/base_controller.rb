@@ -7,7 +7,7 @@ module Admin
 
     before_action :auth_admin!
     before_action :auth_member!
-    before_action :block_ip_addresses
+    #before_action :block_ip_addresses
 
     def current_ability
       @current_ability ||= Admin::Ability.new(current_user)

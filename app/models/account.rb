@@ -10,7 +10,7 @@ class Account < ActiveRecord::Base
   include BelongsToMember
 
   ZERO = 0.to_d
-
+  TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
   has_many :payment_addresses, -> { order(id: :asc) }
   has_many :partial_trees, -> { order(id: :desc) }
 

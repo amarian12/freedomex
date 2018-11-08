@@ -10,9 +10,7 @@
             <div class="down-arrow">
               <input type="text" class='datepicker form-control' name="doc_expire" placeholder="Document Expiry">
               <script type="text/javascript">
-                $(document).ready(function(){
-                  $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
-                });
+                
               </script>
             </div>
         </div>
@@ -52,7 +50,10 @@
 
 
 <script type="text/javascript">
-     
+     $(document).ready(function(){
+        $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+      });
+
     $("#upload-document").submit(function(){
        var file_data = $("#upload").prop("files")[0];   // Getting the properties of file from file field
        var form = $("#upload-document")[0]

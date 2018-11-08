@@ -12,7 +12,7 @@
 #= require ./lib/angular-ui-router
 #= require ./lib/peatio_model
 #= require ./lib/ajax
-
+#= require bootstrap-datepicker
 #= require ./lib/pusher_connection
 #= require ./lib/pusher_subscriber
 

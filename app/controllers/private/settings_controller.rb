@@ -72,6 +72,7 @@ module Private
     end
 
     def upload_document
+
       begin
           @document = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/documents?access_token="+current_user.auth('barong').token,params )
           @status = true
@@ -87,7 +88,7 @@ module Private
   def verify_phone
       begin
           @update_phone = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones/verify?access_token="+current_user.auth('barong').token,params )
-          debugger
+          
           @status = true
           flash[:notice] =  "phone submitted!"
         rescue => e

@@ -17,6 +17,7 @@
 #= require_self
 #= require ./funds/funds
 
+#= require ./header_coffee
 #= require ngDialog/ngDialog
 #= require jquery_ujs
 #= require bootstrap
@@ -46,3 +47,10 @@ $(document).on 'click', '[data-clipboard-text], [data-clipboard-target]', (e) ->
 
 setTimeout -> BigNumber.config(ERRORS: false)
 
+$ ->
+  window.pusher_subscriber = new PusherSubscriber()
+  global_channel = window.pusher.subscribe("market-global")
+  global_channel.bind 'tickers', (data) =>
+    gon.tickers = data
+    MarketTicker.updateData(gon.tickers)
+    HeaderCoffee.setHeaderValues()

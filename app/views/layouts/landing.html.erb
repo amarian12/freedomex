@@ -24,24 +24,26 @@
         </div>
       <% end -%>
     </div>
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-dark bg-dark py-3" id="navbar_main">
-          <div class="container">
-              <a class="navbar-brand mr-lg-5" href="#"><strong>Network status</strong><span class="green-dot"><img src="assets/serverstatus-green.png"></span>Network status</a>
+    <% if !current_user%>
+      <header>
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-dark bg-dark py-3" id="navbar_main">
+            <div class="container">
+                <a class="navbar-brand mr-lg-5" href="#"><strong>Network status</strong><span class="green-dot"><img src="assets/serverstatus-green.png"></span>Network status</a>
 
-              <div class="collapse navbar-collapse" id="navbar_main_collapse">
-                  
+                <div class="collapse navbar-collapse" id="navbar_main_collapse">
 
-                  <ul class="navbar-nav align-items-lg-center ml-lg-auto">
-                    <li class="nav-item">
-                        <a id="server-time" class="nav-link" href="#"></a>
-                    </li>
-                  </ul>
-              </div>
 
-          </div>
-      </nav>
-    </header>
+                    <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+                      <li class="nav-item">
+                          <a id="server-time" class="nav-link" href="#"></a>
+                      </li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+      </header>
+    <%end%>
 
     <%= yield %>
     <div id="push"></div>

@@ -1,4 +1,7 @@
 <main ng-app="dashboard">
+  <% if current_user%>
+    <%= render 'shared/new_header' %>
+  <%end%>
   <!-- Spotlight -->
   <section class="slice slice-lg bg-cover bg-size--cover" data-separator="rounded-continuous" data-separator-bg="secondary">
     <div class="container">

@@ -7,73 +7,76 @@
       </h2>
     </div>
 </div>
-
-<div class="d-flex justify-content-center px-5 py-4">
-
-
-   <%= form_tag verify_contact_settings_path, method: :POST, remote: true do %>
+<%= form_tag "JavaScript:void(0);", method: :POST, remote: true, id: "upload-document" do %>
+  <div class="custom-form form-items">
+    <h3>Identity Verification</h3>
     <div class="form-group">
-        <%= label_tag :phone_number %>
       <div class="row">
-        <div class="col-3">
-          <%= text_field_tag :country_code, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '+1' %>
+
+        <div class="col-md-6">
+            <label class="control-label">Document Expiry</label>
+            <div class="down-arrow">
+              <input type="text" class='datepicker form-control' name="doc_expire" placeholder="Document Expiry">
+              <script type="text/javascript">
+                $(document).ready(function(){
+                  $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+                });
+              </script>
+            </div>
         </div>
-        <div class="col-6 pr-0">
-          <%= text_field_tag :phone_number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '000 000 0000' %>
-        </div>
-        <div class="col-3 pl-0">
-          <div class="send_code underlined">
-          <div class="loader"></div>
-            <a href="javascript:void(0)" id="send-code-btn">Send code</a>
-          </div>
+
+
+        <div class="col-md-6">
+          <label class="control-label">Document Type</label>
+          <%= select_tag(:doc_type, options_for_select([['Passport', 'Passport'], ['Identity card', 'Identity card'], ['Driver license', 'Driver license'], ['Utility Bill','Utility Bill']]), class: "form-control") %>
         </div>
       </div>
     </div>
-  <% end %>
-  <%= form_tag "JavaScript:void(0);" do %>
-    <div class="form-group mt-4">
-      <%= label_tag 'SMS confirmation code' %>
-      <%= number_field_tag :code, nil, class: 'form-control form-control-lg underlined', placeholder: 'Enter code', required: true%>
-      <%= hidden_field_tag "phone_number",nil, id: "ph-num" %>
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Document Number</label>
+            <%#= form.label :doc_number, 'Document number' %>
+            <%#= text_field_tag :doc_number%>
+            <input type="text" class="form-control" name="doc_number" placeholder="Enter Document Number">
+          </div>
+        </div>
+
+        <div class="col-md-6 ">
+          <label class="control-label">Document upload</label>
+          <%= file_field_tag :upload %>
+        </div>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-4">
-      <%= submit_tag  'CONFIRM', id: "code-set" %>
+    <div class="actions">
+      <%= submit_tag 'Submit', class: 'btn btn-bg' %>
     </div>
+  </div>
 <% end %>
-</div>
+
+
 
 <script type="text/javascript">
-  $(document).on("click","#send-code-btn",function(){
-
-    number = $("#country_code").val() + $("#phone_number").val();
-    $("#ph-num").val(number)
-    $.ajax({
-      method:  'POST',
-      data:    { phone_number: number },
-       url: "<%= verify_contact_settings_path %>"
-    });
-  });
-
- $(document).on("click","#code-set",function(){
-    number = $("#country_code").val() + $("#phone_number").val();
-    $("#ph-num").val(number)
-    code = $("#code").val();
-    $.ajax({
-      method:  'POST',
-      data:    { phone_number: number, verification_code: code},
-       url: "<%= verify_phone_path %>",
-        success: function(response){
-          $(".flash-message").css("display","block");
-          $("#country_code").val("");
-          $("#phone_number").val("");
-          $("#code").val("");
-          $("#verified-message").html("Phone was verified successfully");
-        }
-    });
-  });
-
-    $(document).ready(function(){
-       $(".flash-message").css("display","none");
-    })
+  $("#upload-document").submit(function(){
+     var file_data = $("#upload").prop("files")[0];   // Getting the properties of file from file field
+     var form = $("#upload-document")[0]
+     var form_data = new FormData(form);                  // Creating object of FormData class
+     form_data.append("upload", file_data)              // Appending parameter named file with properties of file_field to form_data
+     $.ajax({
+       url: "<%=upload_document_path%>",
+       cache: false,
+       contentType: false,
+       processData: false,
+       data: form_data,                         // Setting the data attribute of ajax with file_data
+       type: 'post',
+       success: function(response){
+         $(".flash-message").css("display","block");
+        $("#verified-message").html("Document Uploaded Successfully");
+        $('#upload-document')[0].reset();
+       }
+     })
+   })
 </script>

@@ -59,7 +59,6 @@ module Private
 
     def verify_contact
       begin
-
           @update_phone = RestClient.post(
             "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones?access_token="+current_user.auth('barong').token,params
           )
@@ -74,6 +73,7 @@ module Private
     def upload_document
 
       begin
+
           @document = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/documents?access_token="+current_user.auth('barong').token,params )
           @status = true
           flash[:notice] =  "Document submitted!"
@@ -85,10 +85,11 @@ module Private
     end
 
 
+
   def verify_phone
       begin
           @update_phone = RestClient.post( "#{ENV.fetch('BARONG_DOMAIN')}/api/v1/phones/verify?access_token="+current_user.auth('barong').token,params )
-          
+
           @status = true
           flash[:notice] =  "phone submitted!"
         rescue => e
@@ -96,7 +97,7 @@ module Private
         end
       render :json => {:phone_verfiy => @update_phone,
                                   :message => @message }
-                                end
+  end
       # def send_code
       #   begin
       #    @send_code = RestClient.post(
